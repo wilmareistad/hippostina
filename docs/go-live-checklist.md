@@ -24,6 +24,7 @@ Update it during the project when new settings or keys are added.
 ## Supabase
 - [ ] Decide if the free plan is enough (pausing, backups) or if Pro is needed.
 - [ ] Public sign-ups still disabled. Only Stina's admin user exists.
+- [ ] `public.admins` contains only Stina's user ID (the developer's ID removed).
 - [ ] RLS tested again as a logged-out visitor.
 - [ ] Test data (paintings and orders) removed.
 
