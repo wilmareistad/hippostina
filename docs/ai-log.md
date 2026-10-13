@@ -23,3 +23,13 @@ Keep it short: what was decided, how AI was used, and how it was verified.
   and a commands and project structure section. Created this log and `go-live-checklist.md`.
 - **My decision:** TODO
 - **Verified against:** TODO
+
+### 2026-10-13 – Database schema, RLS and table privileges
+- **Context:** First migration for paintings, orders and admin-only writes.
+- **AI tool / mode:** Claude Code.
+- **AI suggestion:** `paintings` and `orders` tables, admin check via an `admins` table, RLS so visitors
+  only see available paintings. The AI missed that this project does not grant table privileges by
+  default, so a follow-up migration added the grants.
+- **My decision:** Approved. Only available paintings are visible. My user is admin for now and will be
+  replaced with Stina's later.
+- **Verified against:** curl test as a logged-out visitor: paintings readable, everything else denied.
