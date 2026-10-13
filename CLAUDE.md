@@ -110,6 +110,8 @@ Web shop for Hippostina, the company of the artist Stina. Built as an exam proje
 - **Should**: shipping option, "shipped" email with tracking number, rate limiting / bot protection.
 - **Could**: go live, print-on-demand, shipping label API.
 - **Won't**: customer accounts, custom payment handling.
+- Full project plan (MVP, Definition of Done, sprint plan, risks): `docs/project-plan.md`.
+  Read it when planning work, deciding what to do next, or checking scope.
 
 ## Working style
 - I am learning Angular. Explain new concepts briefly and prefer small steps.
