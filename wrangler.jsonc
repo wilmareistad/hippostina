@@ -1,0 +1,13 @@
+// Cloudflare deploy config. The site is static files only (no Worker code).
+{
+  "name": "hippostina",
+  "compatibility_date": "2026-10-14",
+  "assets": {
+    // Output of `ng build`.
+    "directory": "./dist/hippostina/browser",
+    // Angular handles routes like /admin in the browser, so unknown paths get index.html.
+    "not_found_handling": "single-page-application"
+  },
+  // Required for preview deploys of pull requests. Empty = same settings as production.
+  "previews": {}
+}
