@@ -77,7 +77,7 @@ Web shop for Hippostina, the company of the artist Stina. Built as an exam proje
 ## Project structure
 - Angular app in the repo root (`src/`, `angular.json`).
 - `supabase/` – config, migrations and Edge Functions (created by `supabase init`).
-- `docs/` – `ai-log.md`, `go-live-checklist.md` and other documentation.
+- `docs/` – `ai-log.md` (local only, in `.gitignore`), `go-live-checklist.md` and other documentation.
 - `.github/workflows/` – keep-alive ping.
 - Local secrets go in `.env` / `supabase/functions/.env`, which must be in `.gitignore`.
 
@@ -110,9 +110,12 @@ Web shop for Hippostina, the company of the artist Stina. Built as an exam proje
 - **Should**: shipping option, "shipped" email with tracking number, rate limiting / bot protection.
 - **Could**: go live, print-on-demand, shipping label API.
 - **Won't**: customer accounts, custom payment handling.
+- Full project plan (MVP, Definition of Done, sprint plan, risks): `docs/project-plan.md`.
+  Read it when planning work, deciding what to do next, or checking scope.
 
 ## Working style
 - I am learning Angular. Explain new concepts briefly and prefer small steps.
 - Point out security problems when you see them.
 - Say when you are unsure. I check important things against the official docs.
-- Significant AI-assisted decisions are logged in `docs/ai-log.md`.
+- Significant AI-assisted decisions are logged in `docs/ai-log.md`. The file is not committed,
+  so keep filling it in locally but never `git add` it.
