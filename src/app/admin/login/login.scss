@@ -1,0 +1,20 @@
+/* Basic layout only. Real styling comes with the Figma design. */
+.login {
+  max-width: 22rem;
+  margin: 4rem auto;
+  padding: 0 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+button {
+  margin-top: 1rem;
+}
+
+.error {
+  color: #b00020;
+}
