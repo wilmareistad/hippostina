@@ -12,7 +12,7 @@ Update it during the project when new settings or keys are added.
 - [ ] Business name, logo and support email set for the Checkout page and receipts.
 
 ## Domain and hosting
-- [ ] Custom domain connected in Cloudflare Pages.
+- [ ] Custom domain connected to the Cloudflare Worker.
 - [ ] `SITE_URL` (used for success and cancel URLs) updated to the real domain.
 - [ ] Supabase Auth site URL and redirect URLs updated to the real domain.
 
