@@ -2,4 +2,20 @@
   <h1>Admin</h1>
   <p>Logged in as {{ auth.user()?.email }}</p>
   <button type="button" (click)="signOut()">Log out</button>
+
+  <!-- Temporary (sprint 1 Stripe spike) -->
+  <section>
+    <h2>Stripe test</h2>
+    @if (checkoutResult === 'success') {
+      <p>Test payment completed.</p>
+    } @else if (checkoutResult === 'cancelled') {
+      <p>Test payment cancelled.</p>
+    }
+    <button type="button" (click)="testCheckout()" [disabled]="checkoutLoading()">
+      Test Stripe checkout
+    </button>
+    @if (checkoutError(); as message) {
+      <p>{{ message }}</p>
+    }
+  </section>
 </main>
