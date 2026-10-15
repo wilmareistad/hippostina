@@ -20,7 +20,7 @@ Hippostina
 
 **Payments:** Stripe Checkout (test mode during the project), I chose stripe so that card data never touches the application directly.
 
-**Hosting:** Cloudflare Pages (free, allows commercial use)
+**Hosting:** Cloudflare Workers with static assets (free, allows commercial use). Cloudflare now recommends Workers over Pages for new projects.
 
 **Resend:** Used for order confirmation/receipt to the customer and order notification/receipt to Admin
 
@@ -103,7 +103,7 @@ I will have CLAUDE.md file that will be kept in the root as persistent context f
 
 The system has three main parts:
 
-- **Frontend (Angular, on Cloudflare Pages):** the shop that customers see and the admin page.
+- **Frontend (Angular, on Cloudflare Workers):** the shop that customers see and the admin page.
 - **Supabase:** the database, the admin login, image storage and server functions.
 - **Stripe:** the payment page where the customer pays.
 
@@ -123,7 +123,7 @@ Main choices:
 - **Reservation:** a painting is reserved when checkout starts, so two customers cannot buy the same painting.
 - **Archive instead of delete:** old orders can still point to the painting.
 - **Environment variables:** all keys and URLs are stored there, so going live means changing settings, not code.
-- **Cloudflare Pages:** free, allows commercial use, and no move is needed if the shop goes live.
+- **Cloudflare Workers (static assets):** free, allows commercial use, and no move is needed if the shop goes live.
 
 ### Sprint plan
 
@@ -131,7 +131,7 @@ Main choices:
 - Goal: set up everything and test the hardest parts early.
 - Create repo, CLAUDE.md, Angular project and Supabase project
 - Create database tables and security rules
-- Deploy an empty app to Cloudflare Pages
+- Deploy an empty app to Cloudflare Workers
 - Make the design in Figma
 - Admin login (Must)
 - Small test of a Supabase function with Stripe test mode

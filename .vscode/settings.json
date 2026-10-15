@@ -1,0 +1,5 @@
+{
+  // Use the Deno language server only for Supabase Edge Functions (Deno + TypeScript).
+  // The rest of the project (Angular) keeps using the normal TypeScript server.
+  "deno.enablePaths": ["supabase/functions"]
+}
