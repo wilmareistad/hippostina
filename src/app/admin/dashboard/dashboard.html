@@ -18,4 +18,19 @@
       <p>{{ message }}</p>
     }
   </section>
+
+  <!-- Temporary test -->
+  <section>
+    <h2>Image upload test</h2>
+    <input type="file" (change)="onFileSelected($event)" />
+    <button type="button" (click)="uploadImage()" [disabled]="!selectedFile() || uploadLoading()">
+      Upload
+    </button>
+    @if (uploadError(); as message) {
+      <p>{{ message }}</p>
+    }
+    @if (uploadedUrl(); as url) {
+      <p>Public URL: <a [href]="url" target="_blank" rel="noopener">{{ url }}</a></p>
+    }
+  </section>
 </main>
