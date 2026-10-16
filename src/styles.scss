@@ -1,1 +1,31 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles */
+
+:root {
+  /* Colors */
+  --color-bg: #FBF9F4;
+  --color-text: #1B1C19;
+  --secondary-color-text: #3F3B37;
+  --color-primary: #8D5428;
+  --color-secondary: #C07A38;
+  --accent-color: #287879;
+  --seccon-bg-color: #287879;
+
+  /* Fonts */
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-heading: 'EB Garamond', Georgia, serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+}
