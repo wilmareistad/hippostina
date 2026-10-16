@@ -1,0 +1,28 @@
+name: Supabase keep-alive
+
+# A cheap read against the REST API every 3 days keeps it awake.
+on:
+  schedule:
+    # minute hour day-of-month month day-of-week (UTC)
+    - cron: "0 6 */3 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          # --fail makes curl exit non-zero on 4xx/5xx, which turns the job red.
+          status=$(curl --fail --silent --show-error \
+            --output /dev/null \
+            --write-out '%{http_code}' \
+            --header "apikey: ${SUPABASE_ANON_KEY}" \
+            "${SUPABASE_URL}/rest/v1/paintings?select=id&limit=1")
+          echo "Supabase responded with HTTP ${status}"
