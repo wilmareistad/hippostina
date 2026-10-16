@@ -13,7 +13,7 @@ Web shop for Hippostina, the company of the artist Stina. Built as an exam proje
 - Backend: Supabase (Postgres, Auth, Storage, Edge Functions)
 - Payments: Stripe Checkout (test mode)
 - Email: Resend (called from Edge Functions)
-- Hosting: Cloudflare Pages
+- Hosting: Cloudflare Workers (static assets), configured in `wrangler.jsonc`
 - Design: Figma
 - Version control: GitHub
 - GitHub Actions: scheduled keep-alive ping to Supabase (so the free project is not paused)
@@ -83,7 +83,7 @@ Web shop for Hippostina, the company of the artist Stina. Built as an exam proje
 
 ## Commands
 - `ng serve` – run the Angular app locally (http://localhost:4200).
-- `ng build` – production build (output in `dist/`, used by Cloudflare Pages).
+- `ng build` – production build (output in `dist/`, used by Cloudflare Workers).
 - `ng test` – unit tests.
 - `supabase migration new <name>` – create a new migration file.
 - `supabase db push` – apply migrations to the linked Supabase project.
