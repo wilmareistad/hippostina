@@ -2,6 +2,15 @@ import { inject, Injectable } from '@angular/core';
 import { Painting, PaintingInput } from './painting';
 import { SupabaseService } from './supabase.service';
 
+const IMAGE_BUCKET = 'painting-images';
+/** Same limits as the bucket (see the create_painting_images_bucket migration). */
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const IMAGE_EXTENSIONS: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+};
+
 /**
  * Reads and writes paintings. RLS decides what is allowed when logged in as admin
  * every painting is visible and writable, for visitors only available ones are readable.
@@ -65,6 +74,34 @@ export class PaintingService {
   /** Undo an archive. */
   async restore(id: string): Promise<void> {
     await this.setStatus(id, 'archived', 'available');
+  }
+
+  /**
+   * Uploads an image under a random UUID name and returns the path to store in "image_path".
+   * The name never comes from the user's file name. The server checks type and size.
+   */
+  async uploadImage(file: File): Promise<string> {
+    const extension = IMAGE_EXTENSIONS[file.type];
+    if (!extension) throw new Error('Bilden måste vara JPG, PNG eller WebP.');
+    if (file.size > MAX_IMAGE_BYTES) throw new Error('Bilden får vara högst 10 MB.');
+
+    const path = `${crypto.randomUUID()}.${extension}`;
+    const { error } = await this.supabase.storage
+      .from(IMAGE_BUCKET)
+      .upload(path, file, { contentType: file.type });
+    if (error) throw error;
+    return path;
+  }
+
+  /** Removes an image file, for example an old image that was replaced or an upload that was abandoned. */
+  async deleteImage(path: string): Promise<void> {
+    const { error } = await this.supabase.storage.from(IMAGE_BUCKET).remove([path]);
+    if (error) throw error;
+  }
+
+  /** Public URL for an image. The bucket is public, so no login is needed to show it. */
+  imageUrl(path: string): string {
+    return this.supabase.storage.from(IMAGE_BUCKET).getPublicUrl(path).data.publicUrl;
   }
 
   /** Changes status only if the painting currently has from (one atomic update). */
