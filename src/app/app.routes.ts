@@ -12,4 +12,15 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     loadComponent: () => import('./admin/dashboard/dashboard').then((m) => m.Dashboard),
   },
+  // 'new' is listed before ':id', otherwise ':id' would match the word "new".
+  {
+    path: 'admin/paintings/new',
+    canActivate: [adminGuard],
+    loadComponent: () => import('./admin/painting-form/painting-form').then((m) => m.PaintingForm),
+  },
+  {
+    path: 'admin/paintings/:id',
+    canActivate: [adminGuard],
+    loadComponent: () => import('./admin/painting-form/painting-form').then((m) => m.PaintingForm),
+  },
 ];

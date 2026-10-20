@@ -1,0 +1,71 @@
+<section>
+  <h2>Tavlor</h2>
+  <p><a routerLink="/admin/paintings/new">Ny tavla</a></p>
+
+  <div class="tabs" role="group" aria-label="Filtrera på status">
+    @for (tab of tabs; track tab.status) {
+      <button
+        type="button"
+        [class.active]="tab.status === selectedStatus()"
+        [attr.aria-pressed]="tab.status === selectedStatus()"
+        (click)="selectedStatus.set(tab.status)"
+      >
+        {{ tab.label }} ({{ countFor(tab.status) }})
+      </button>
+    }
+  </div>
+
+  @if (actionError(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  }
+
+  @if (loading()) {
+    <p>Hämtar tavlor…</p>
+  } @else if (error(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  } @else if (visiblePaintings().length === 0) {
+    <p>Inga tavlor här.</p>
+  } @else {
+    <ul class="paintings">
+      @for (painting of visiblePaintings(); track painting.id) {
+        <li>
+          @if (imageUrl(painting); as url) {
+            <img [src]="url" [alt]="painting.title" width="80" height="80" />
+          } @else {
+            <div class="no-image">Ingen bild</div>
+          }
+          <div class="info">
+            <strong>{{ painting.title }}</strong>
+            <span>{{ price(painting) }}</span>
+            @if (size(painting); as size) {
+              <span>{{ size }}</span>
+            }
+          </div>
+          <div class="actions">
+            <a [routerLink]="['/admin/paintings', painting.id]">Redigera</a>
+            @if (painting.status === 'available') {
+              <button type="button" (click)="archive(painting)" [disabled]="busyId() !== null">
+                Arkivera
+              </button>
+            } @else if (painting.status === 'archived') {
+              <button type="button" (click)="restore(painting)" [disabled]="busyId() !== null">
+                Återställ
+              </button>
+              <button type="button" (click)="askDelete(painting)" [disabled]="busyId() !== null">
+                Radera permanent
+              </button>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>
+
+<!-- showModal() opens it on top of the page, Esc closes it. -->
+<dialog #deleteDialog (close)="paintingToDelete.set(null)">
+  <p>Radera "{{ paintingToDelete()?.title }}" permanent?</p>
+  <p>Det går inte att ångra. Tavlor som har en order kan inte raderas.</p>
+  <button type="button" (click)="cancelDelete()">Avbryt</button>
+  <button type="button" (click)="confirmDelete()">Radera permanent</button>
+</dialog>
