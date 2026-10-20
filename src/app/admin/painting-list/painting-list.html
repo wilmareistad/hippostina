@@ -51,6 +51,9 @@
               <button type="button" (click)="restore(painting)" [disabled]="busyId() !== null">
                 Återställ
               </button>
+              <button type="button" (click)="askDelete(painting)" [disabled]="busyId() !== null">
+                Radera permanent
+              </button>
             }
           </div>
         </li>
@@ -58,3 +61,11 @@
     </ul>
   }
 </section>
+
+<!-- showModal() opens it on top of the page, Esc closes it. -->
+<dialog #deleteDialog (close)="paintingToDelete.set(null)">
+  <p>Radera "{{ paintingToDelete()?.title }}" permanent?</p>
+  <p>Det går inte att ångra. Tavlor som har en order kan inte raderas.</p>
+  <button type="button" (click)="cancelDelete()">Avbryt</button>
+  <button type="button" (click)="confirmDelete()">Radera permanent</button>
+</dialog>

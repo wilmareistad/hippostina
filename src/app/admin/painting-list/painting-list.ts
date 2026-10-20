@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Painting, PaintingStatus } from '../../core/painting';
 import { PaintingService } from '../../core/painting.service';
@@ -33,6 +33,11 @@ export class PaintingList {
   protected readonly busyId = signal<string | null>(null);
   protected readonly actionError = signal<string | null>(null);
 
+  /** The painting the delete confirmation is about, or null when it is closed. */
+  protected readonly paintingToDelete = signal<Painting | null>(null);
+  /** The native <dialog> element in the template (#deleteDialog). */
+  private readonly deleteDialog = viewChild.required<ElementRef<HTMLDialogElement>>('deleteDialog');
+
   /** Recalculated automatically when "paintings" or "selectedStatus" change. */
   protected readonly visiblePaintings = computed(() =>
     this.paintings().filter((painting) => painting.status === this.selectedStatus()),
@@ -63,16 +68,43 @@ export class PaintingList {
 
   /** Archive (soft delete). Only available paintings can be archived. */
   protected async archive(painting: Painting): Promise<void> {
-    await this.changeStatus(painting, () => this.paintingService.archive(painting.id));
+    await this.runAction(painting, () => this.paintingService.archive(painting.id));
   }
 
   /** Undo an archive: the painting becomes available again. */
   protected async restore(painting: Painting): Promise<void> {
-    await this.changeStatus(painting, () => this.paintingService.restore(painting.id));
+    await this.runAction(painting, () => this.paintingService.restore(painting.id));
   }
 
-  /** Runs one status change, then reloads the list so it matches the database. */
-  private async changeStatus(painting: Painting, action: () => Promise<void>): Promise<void> {
+  /** Step 1 of a permanent delete: ask first, because it cannot be undone. */
+  protected askDelete(painting: Painting): void {
+    this.paintingToDelete.set(painting);
+    this.deleteDialog().nativeElement.showModal();
+  }
+
+  protected cancelDelete(): void {
+    this.deleteDialog().nativeElement.close();
+    this.paintingToDelete.set(null);
+  }
+
+  /** Step 2: the admin confirmed. Only archived paintings without orders can be deleted. */
+  protected async confirmDelete(): Promise<void> {
+    const painting = this.paintingToDelete();
+    this.cancelDelete();
+    if (!painting) return;
+    await this.runAction(
+      painting,
+      () => this.paintingService.deleteArchived(painting.id),
+      `Kunde inte radera "${painting.title}". Har den en order går det inte. Listan har uppdaterats.`,
+    );
+  }
+
+  /** Runs one action, then reloads the list so it matches the database. */
+  private async runAction(
+    painting: Painting,
+    action: () => Promise<void>,
+    failureMessage = `Kunde inte ändra "${painting.title}". Listan har uppdaterats.`,
+  ): Promise<void> {
     if (this.busyId()) return; // one action at a time
     this.busyId.set(painting.id);
     this.actionError.set(null);
@@ -81,7 +113,7 @@ export class PaintingList {
     } catch (error) {
       // Also happens if the status changed meanwhile, for example a customer reserved it.
       console.error(error);
-      this.actionError.set(`Kunde inte ändra "${painting.title}". Listan har uppdaterats.`);
+      this.actionError.set(failureMessage);
     }
     await this.load();
     this.busyId.set(null);

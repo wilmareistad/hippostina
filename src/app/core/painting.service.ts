@@ -77,6 +77,26 @@ export class PaintingService {
   }
 
   /**
+   * Permanently deletes a painting that is archived. RLS only allows archived ones, and the
+   * database refuses if the painting has an order. The image file is removed afterwards.
+   */
+  async deleteArchived(id: string): Promise<void> {
+    const { data, error } = await this.supabase
+      .from('paintings')
+      .delete()
+      .eq('id', id)
+      .eq('status', 'archived')
+      .select('id, image_path');
+    // Fails with code 23503 (foreign key violation) if an order refers to this painting.
+    if (error) throw error;
+    if (data.length === 0) throw new Error('Painting is not archived, so it cannot be deleted.');
+
+    // The row is gone. Removing its image is only cleanup, so a failure is not shown.
+    const imagePath = (data[0] as Pick<Painting, 'image_path'>).image_path;
+    if (imagePath) await this.deleteImage(imagePath).catch(console.error);
+  }
+
+  /**
    * Uploads an image under a random UUID name and returns the path to store in "image_path".
    * The name never comes from the user's file name. The server checks type and size.
    */
