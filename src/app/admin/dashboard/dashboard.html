@@ -1,36 +1,7 @@
 <main>
   <h1>Admin</h1>
-  <p>Logged in as {{ auth.user()?.email }}</p>
-  <button type="button" (click)="signOut()">Log out</button>
+  <p>Inloggad som {{ auth.user()?.email }}</p>
+  <button type="button" (click)="signOut()">Logga ut</button>
 
-  <!-- Temporary (sprint 1 Stripe spike) -->
-  <section>
-    <h2>Stripe test</h2>
-    @if (checkoutResult === 'success') {
-      <p>Test payment completed.</p>
-    } @else if (checkoutResult === 'cancelled') {
-      <p>Test payment cancelled.</p>
-    }
-    <button type="button" (click)="testCheckout()" [disabled]="checkoutLoading()">
-      Test Stripe checkout
-    </button>
-    @if (checkoutError(); as message) {
-      <p>{{ message }}</p>
-    }
-  </section>
-
-  <!-- Temporary test -->
-  <section>
-    <h2>Image upload test</h2>
-    <input type="file" (change)="onFileSelected($event)" />
-    <button type="button" (click)="uploadImage()" [disabled]="!selectedFile() || uploadLoading()">
-      Upload
-    </button>
-    @if (uploadError(); as message) {
-      <p>{{ message }}</p>
-    }
-    @if (uploadedUrl(); as url) {
-      <p>Public URL: <a [href]="url" target="_blank" rel="noopener">{{ url }}</a></p>
-    }
-  </section>
+  <app-painting-list />
 </main>

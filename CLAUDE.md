@@ -32,7 +32,9 @@ Web shop for Hippostina, the company of the artist Stina. Built as an exam proje
   - Webhook `checkout.session.completed`: painting becomes `sold` and the order is saved.
   - Session expires or is cancelled: painting becomes `available` again.
 - Admin can also mark a painting as sold elsewhere.
-- Soft delete only. Paintings are archived, never permanently deleted (old orders refer to them).
+- Archive first, delete later. Paintings are archived by default. The admin can permanently delete
+  a painting only if it is `archived` (RLS delete policy), and never one that has an order:
+  `orders.painting_id` is `on delete restrict`, so the database refuses (old orders refer to it).
 - Reserving must be atomic, so two customers cannot reserve the same painting:
   a single `update ... set status = 'reserved' where id = ... and status = 'available'`,
   and only create the Checkout session if that update changed a row.
