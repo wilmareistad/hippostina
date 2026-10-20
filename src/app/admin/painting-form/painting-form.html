@@ -1,0 +1,65 @@
+<main class="painting-form">
+  <p><a routerLink="/admin">← Tillbaka</a></p>
+  <h1>{{ isEdit ? 'Redigera tavla' : 'Ny tavla' }}</h1>
+
+  @if (loading()) {
+    <p>Hämtar tavla…</p>
+  } @else if (loadError(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label for="title">Titel</label>
+      <input id="title" type="text" formControlName="title" />
+      @if (form.controls.title.touched && form.controls.title.invalid) {
+        <p class="error" role="alert">Titel måste fyllas i.</p>
+      }
+
+      <label for="description">Beskrivning (valfri)</label>
+      <textarea id="description" rows="5" formControlName="description"></textarea>
+
+      <label for="price">Pris (kr)</label>
+      <input id="price" type="number" min="1" step="0.01" formControlName="price" />
+      @if (priceLocked()) {
+        <p>Priset kan inte ändras när tavlan är reserverad eller såld.</p>
+      }
+      @if (form.controls.price.touched && form.controls.price.invalid) {
+        <p class="error" role="alert">Ange ett pris på minst 1 kr.</p>
+      }
+
+      <label for="width">Bredd (cm, valfri)</label>
+      <input id="width" type="number" min="1" step="1" formControlName="width" />
+      @if (form.controls.width.touched && form.controls.width.invalid) {
+        <p class="error" role="alert">Ange ett heltal över 0, eller lämna tomt.</p>
+      }
+
+      <label for="height">Höjd (cm, valfri)</label>
+      <input id="height" type="number" min="1" step="1" formControlName="height" />
+      @if (form.controls.height.touched && form.controls.height.invalid) {
+        <p class="error" role="alert">Ange ett heltal över 0, eller lämna tomt.</p>
+      }
+
+      <label for="image">Bild (JPG, PNG eller WebP, högst 10 MB)</label>
+      @if (currentImageUrl(); as url) {
+        <img [src]="url" [alt]="painting()?.title" width="160" />
+        <p>Välj en ny fil om du vill byta bild.</p>
+      }
+      <input
+        id="image"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        (change)="onFileSelected($event)"
+      />
+      @if (fileError(); as message) {
+        <p class="error" role="alert">{{ message }}</p>
+      }
+
+      @if (saveError(); as message) {
+        <p class="error" role="alert">{{ message }}</p>
+      }
+
+      <button type="submit" [disabled]="saving()">
+        {{ saving() ? 'Sparar…' : 'Spara' }}
+      </button>
+    </form>
+  }
+</main>

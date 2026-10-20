@@ -81,9 +81,9 @@ export class PaintingService {
    * The name never comes from the user's file name. The server checks type and size.
    */
   async uploadImage(file: File): Promise<string> {
+    const problem = this.imageProblem(file);
+    if (problem) throw new Error(problem);
     const extension = IMAGE_EXTENSIONS[file.type];
-    if (!extension) throw new Error('Bilden måste vara JPG, PNG eller WebP.');
-    if (file.size > MAX_IMAGE_BYTES) throw new Error('Bilden får vara högst 10 MB.');
 
     const path = `${crypto.randomUUID()}.${extension}`;
     const { error } = await this.supabase.storage
@@ -91,6 +91,13 @@ export class PaintingService {
       .upload(path, file, { contentType: file.type });
     if (error) throw error;
     return path;
+  }
+
+  /** A message if the file cannot be uploaded, otherwise null. Lets a form warn early. */
+  imageProblem(file: File): string | null {
+    if (!IMAGE_EXTENSIONS[file.type]) return 'Bilden måste vara JPG, PNG eller WebP.';
+    if (file.size > MAX_IMAGE_BYTES) return 'Bilden får vara högst 10 MB.';
+    return null;
   }
 
   /** Removes an image file, for example an old image that was replaced or an upload that was abandoned. */
