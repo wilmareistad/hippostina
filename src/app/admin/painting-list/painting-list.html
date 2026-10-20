@@ -1,5 +1,6 @@
 <section>
   <h2>Tavlor</h2>
+  <p><a routerLink="/admin/paintings/new">Ny tavla</a></p>
 
   <div class="tabs" role="group" aria-label="Filtrera på status">
     @for (tab of tabs; track tab.status) {
@@ -36,6 +37,7 @@
               <span>{{ size }}</span>
             }
           </div>
+          <a [routerLink]="['/admin/paintings', painting.id]">Redigera</a>
         </li>
       }
     </ul>
