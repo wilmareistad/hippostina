@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -48,6 +48,9 @@ export class PaintingForm {
 
   protected readonly selectedFile = signal<File | null>(null);
   protected readonly fileError = signal<string | null>(null);
+  /** The native <dialog> elements in the template (#noImageDialog, #imageInput). */
+  private readonly noImageDialog = viewChild.required<ElementRef<HTMLDialogElement>>('noImageDialog');
+  private readonly imageInput = viewChild<ElementRef<HTMLInputElement>>('imageInput');
   protected readonly saving = signal(false);
   protected readonly saveError = signal<string | null>(null);
 
@@ -82,6 +85,30 @@ export class PaintingForm {
       this.form.markAllAsTouched();
       return;
     }
+    if (this.saving()) return;
+
+    // A painting without an image is allowed, but ask first because it is easy to forget.
+    const hasImage = this.selectedFile() !== null || this.painting()?.image_path != null;
+    if (!hasImage) {
+      this.noImageDialog().nativeElement.showModal();
+      return;
+    }
+    await this.save();
+  }
+
+  /** "Lägg till bild" in the dialog: close it and move the cursor to the file field. */
+  protected addImage(): void {
+    this.noImageDialog().nativeElement.close();
+    this.imageInput()?.nativeElement.focus();
+  }
+
+  /** "Spara utan bild" in the dialog. */
+  protected async saveWithoutImage(): Promise<void> {
+    this.noImageDialog().nativeElement.close();
+    await this.save();
+  }
+
+  private async save(): Promise<void> {
     if (this.saving()) return;
 
     // getRawValue() also includes the price when the field is disabled.

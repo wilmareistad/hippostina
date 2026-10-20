@@ -45,6 +45,7 @@
       }
       <input
         id="image"
+        #imageInput
         type="file"
         accept="image/jpeg,image/png,image/webp"
         (change)="onFileSelected($event)"
@@ -63,3 +64,12 @@
     </form>
   }
 </main>
+
+<!-- showModal() opens it on top of the page, Esc closes it (same as "Lägg till bild"). -->
+<dialog #noImageDialog>
+  <p>Du försöker {{ isEdit ? 'spara' : 'skapa' }} en tavla utan bild.</p>
+  <button type="button" (click)="addImage()">Lägg till bild</button>
+  <button type="button" (click)="saveWithoutImage()">
+    {{ isEdit ? 'Spara' : 'Skapa tavla' }} utan bild
+  </button>
+</dialog>
