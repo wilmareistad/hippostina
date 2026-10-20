@@ -30,6 +30,8 @@ export class PaintingList {
   protected readonly selectedStatus = signal<PaintingStatus>('available');
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
+  protected readonly busyId = signal<string | null>(null);
+  protected readonly actionError = signal<string | null>(null);
 
   /** Recalculated automatically when "paintings" or "selectedStatus" change. */
   protected readonly visiblePaintings = computed(() =>
@@ -57,6 +59,32 @@ export class PaintingList {
       return `${painting.width_cm} × ${painting.height_cm} cm`;
     }
     return null;
+  }
+
+  /** Archive (soft delete). Only available paintings can be archived. */
+  protected async archive(painting: Painting): Promise<void> {
+    await this.changeStatus(painting, () => this.paintingService.archive(painting.id));
+  }
+
+  /** Undo an archive: the painting becomes available again. */
+  protected async restore(painting: Painting): Promise<void> {
+    await this.changeStatus(painting, () => this.paintingService.restore(painting.id));
+  }
+
+  /** Runs one status change, then reloads the list so it matches the database. */
+  private async changeStatus(painting: Painting, action: () => Promise<void>): Promise<void> {
+    if (this.busyId()) return; // one action at a time
+    this.busyId.set(painting.id);
+    this.actionError.set(null);
+    try {
+      await action();
+    } catch (error) {
+      // Also happens if the status changed meanwhile, for example a customer reserved it.
+      console.error(error);
+      this.actionError.set(`Kunde inte ändra "${painting.title}". Listan har uppdaterats.`);
+    }
+    await this.load();
+    this.busyId.set(null);
   }
 
   private async load(): Promise<void> {
