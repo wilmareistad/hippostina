@@ -6,7 +6,13 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./layout/layout').then((m) => m.Layout),
-    children: [],
+    children: [
+      {
+        path: 'malningar',
+        loadComponent: () =>
+          import('./gallery/gallery-page/gallery-page').then((m) => m.GalleryPage),
+      },
+    ],
   },
   // loadComponent: the admin code is only downloaded when someone opens these pages.
   {
