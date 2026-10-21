@@ -2,6 +2,12 @@ import { Routes } from '@angular/router';
 import { adminGuard } from './core/admin.guard';
 
 export const routes: Routes = [
+  // Public pages share header and footer from Layout. Child routes are shown in its <router-outlet>.
+  {
+    path: '',
+    loadComponent: () => import('./layout/layout').then((m) => m.Layout),
+    children: [],
+  },
   // loadComponent: the admin code is only downloaded when someone opens these pages.
   {
     path: 'admin/login',
