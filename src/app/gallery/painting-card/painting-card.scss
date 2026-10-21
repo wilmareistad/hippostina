@@ -1,0 +1,50 @@
+// Mobile first: one card fills the width, the gallery decides how many columns there are.
+.card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.placeholder {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--secondary-color-text);
+}
+
+
+.card {
+  display: block;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
+}
+
+.image {
+  aspect-ratio: 4 / 5;
+  background: #f1efe8;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.info {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.price {
+  margin: 0;
+  color: var(--color-primary);
+  font-weight: 600;
+}
