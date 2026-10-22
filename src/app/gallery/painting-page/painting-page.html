@@ -20,16 +20,23 @@
       </div>
 
       <div class="details">
-        <p class="eyebrow">ORIGINAL · UNIKT VERK</p>
-        <h1>{{ painting.title }}</h1>
-        <p class="price">{{ price() }}</p>
-        @if (size()) {
-          <p class="size">{{ size() }}</p>
-        }
-        @if (painting.description) {
-          <p class="description">{{ painting.description }}</p>
-        }
-        <!-- The buy button is added in sprint 3 (Checkout). It goes at the bottom of .details. -->
+        <div class="text">
+          <p class="eyebrow">ORIGINAL · UNIKT VERK</p>
+          <h1>{{ painting.title }}</h1>
+          <p class="price">{{ price() }}</p>
+          @if (size()) {
+            <p class="size">{{ size() }}</p>
+          }
+          @if (painting.description) {
+            <p class="description">{{ painting.description }}</p>
+          }
+        </div>
+
+        <div class="buy">
+          <!-- TODO (sprint 3): start Checkout here. The button does nothing yet. -->
+          <button class="buy-button" type="button">KÖP</button>
+          <p class="note">Varje tavla är ett unikt original och kan bara säljas en gång.</p>
+        </div>
       </div>
     </article>
   }
