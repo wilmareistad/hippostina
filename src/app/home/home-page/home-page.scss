@@ -75,13 +75,8 @@ h1 {
   }
 }
 
-.primary {
-  background: #000;
-  color: #fff;
-
-  &:hover {
-    background: var(--secondary-color-text);
-  }
+.primary:hover {
+  background: var(--secondary-color-text);
 }
 
 .secondary {
@@ -89,7 +84,7 @@ h1 {
   color: var(--color-text);
 
   &:hover {
-    background: #dcd9d0;
+    background: var(--seccond-bg-color);
   }
 }
 
