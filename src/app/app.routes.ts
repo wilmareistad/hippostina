@@ -12,6 +12,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./gallery/gallery-page/gallery-page').then((m) => m.GalleryPage),
       },
+      {
+        path: 'painting/:id',
+        loadComponent: () =>
+          import('./gallery/painting-page/painting-page').then((m) => m.PaintingPage),
+      },
     ],
   },
   // loadComponent: the admin code is only downloaded when someone opens these pages.

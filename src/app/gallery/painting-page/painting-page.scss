@@ -1,0 +1,100 @@
+// Mobile first: image above the text. Side by side from 48rem.
+.page {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: var(--secondary-color-text);
+  font-size: 0.875rem;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+.message {
+  color: var(--secondary-color-text);
+}
+
+.link {
+  color: var(--color-primary);
+}
+
+.painting {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.image {
+  background: #f1efe8;
+
+  img {
+    display: block;
+    width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+  }
+}
+
+.placeholder {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  color: var(--secondary-color-text);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+}
+
+h1 {
+  margin: 0.5rem 0;
+  font-weight: 400;
+  font-size: 2.25rem;
+}
+
+.price {
+  margin: 0 0 1.5rem;
+  color: var(--color-primary);
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
+.size {
+  margin: 0 0 1rem;
+  color: var(--secondary-color-text);
+}
+
+.description {
+  margin: 0;
+  color: var(--secondary-color-text);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  // Keeps line breaks that Stina typed in the description.
+  white-space: pre-line;
+}
+
+@media (min-width: 48rem) {
+  .page {
+    padding: 2.5rem 2rem 4rem;
+  }
+
+  .painting {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+}
