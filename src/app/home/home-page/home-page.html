@@ -1,0 +1,20 @@
+<section class="hero">
+  <div class="hero-image">
+    <img src="stina.png" [alt]="content.hero.imageAlt" />
+  </div>
+
+  <div class="hero-text">
+    <div class="text">
+      <p class="eyebrow">{{ content.hero.eyebrow }}</p>
+      <h1>{{ content.hero.title }}</h1>
+      @for (paragraph of content.hero.paragraphs; track paragraph) {
+        <p class="paragraph">{{ paragraph }}</p>
+      }
+    </div>
+    <div class="actions">
+      <a class="button primary" routerLink="/malningar">SE MÅLNINGAR</a>
+      <!-- link to the contact form when it exists. -->
+      <button class="button secondary" type="button">HÖR AV DIG</button>
+    </div>
+  </div>
+</section>

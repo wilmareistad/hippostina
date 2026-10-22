@@ -1,0 +1,108 @@
+// Mobile first: image above the text. Side by side from 48rem.
+.hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2rem;
+}
+
+.hero-image {
+  padding: 0.75rem;
+  background: #f1efe8;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
+
+  img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+}
+
+h1 {
+  margin: 0.5rem 0 1rem;
+  font-weight: 400;
+  font-size: 2.25rem;
+}
+
+.paragraph {
+  margin: 0 0 1rem;
+  color: var(--secondary-color-text);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+// The text column is as tall as the image, so the buttons end up level with the image bottom.
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.text {
+  flex: 1;
+}
+
+// Two buttons, 50% of the width each.
+.actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.button {
+  flex: 1;
+  padding: 0.85rem 1.5rem;
+  border: 0;
+  text-align: center;
+  font: inherit;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+}
+
+.primary {
+  background: #000;
+  color: #fff;
+
+  &:hover {
+    background: var(--secondary-color-text);
+  }
+}
+
+.secondary {
+  background: #e8e6df;
+  color: var(--color-text);
+
+  &:hover {
+    background: #dcd9d0;
+  }
+}
+
+@media (min-width: 48rem) {
+  .hero {
+    // The image column is wider than the text column.
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+    align-items: stretch;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+}

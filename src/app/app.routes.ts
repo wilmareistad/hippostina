@@ -8,6 +8,11 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/layout').then((m) => m.Layout),
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () => import('./home/home-page/home-page').then((m) => m.HomePage),
+      },
+      {
         path: 'malningar',
         loadComponent: () =>
           import('./gallery/gallery-page/gallery-page').then((m) => m.GalleryPage),
