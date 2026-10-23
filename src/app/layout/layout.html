@@ -20,8 +20,15 @@
   </button>
 
   <nav id="main-nav" class="nav" [class.open]="menuOpen()" aria-label="Huvudmeny">
-    <!--the pages /om-mig, /malningar and /kontakt are created in later steps. Not creatted yet. -->
-    <a routerLink="/om-mig" routerLinkActive="active" (click)="closeMenu()">Om mig</a>
+    <!--the page /kontakt are created in later steps. Not creatted yet. -->
+    <!-- exact: true, otherwise "/" would count as active on every page. -->
+    <a
+      routerLink="/"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="closeMenu()"
+      >Hem</a
+    >
     <a routerLink="/malningar" routerLinkActive="active" (click)="closeMenu()">Målningar</a>
     <a routerLink="/kontakt" routerLinkActive="active" (click)="closeMenu()">Kontakt</a>
   </nav>
