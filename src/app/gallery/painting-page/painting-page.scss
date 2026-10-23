@@ -1,0 +1,144 @@
+// Mobile first: image above the text. Side by side from 48rem.
+.page {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: var(--secondary-color-text);
+  font-size: 0.875rem;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+.message {
+  color: var(--secondary-color-text);
+}
+
+.link {
+  color: var(--color-primary);
+}
+
+.painting {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.image {
+  padding: 1rem;
+  background: var(--seccond-bg-color);
+
+  img {
+    display: block;
+    width: 100%;
+    max-height: 75vh;
+    object-fit: contain;
+  }
+}
+
+// The text column is as tall as the image, so the buy button ends up level with the image bottom.
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.text {
+  flex: 1;
+}
+
+.buy-button {
+  width: 100%;
+  padding: 1.1rem 1rem;
+  border: 0;
+  font: inherit;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--secondary-color-text);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+}
+
+.note {
+  margin: 0.75rem 0 0;
+  color: var(--secondary-color-text);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.placeholder {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  color: var(--secondary-color-text);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+}
+
+h1 {
+  margin: 0.5rem 0;
+  font-weight: 400;
+  font-size: 2.25rem;
+}
+
+.price {
+  margin: 0 0 1rem;
+  color: var(--color-primary);
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+
+.size {
+  margin: 0 0 1rem;
+  color: var(--secondary-color-text);
+  font-size: 1.125rem;
+}
+
+.description {
+  margin: 0;
+  color: var(--secondary-color-text);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  // Keeps line breaks that Stina typed in the description.
+  white-space: pre-line;
+}
+
+@media (min-width: 48rem) {
+  .page {
+    padding: 2.5rem 2rem 4rem;
+  }
+
+  .painting {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    // stretch (the default): both columns are as tall as the taller one.
+    align-items: stretch;
+  }
+
+  .image {
+    padding: 2rem;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+}

@@ -1,0 +1,43 @@
+<section class="page">
+  <a class="back" routerLink="/malningar">← Alla målningar</a>
+
+  @if (loading()) {
+    <p class="message">Laddar målning…</p>
+  } @else if (notFound()) {
+    <div class="message">
+      <h1>Tavlan hittades inte</h1>
+      <p>Tavlan finns inte eller är inte längre till salu.</p>
+      <a class="link" routerLink="/malningar">Se alla tillgängliga målningar</a>
+    </div>
+  } @else if (painting(); as painting) {
+    <article class="painting">
+      <div class="image">
+        @if (imageUrl()) {
+          <img [src]="imageUrl()" [alt]="painting.title" />
+        } @else {
+          <span class="placeholder">Ingen bild</span>
+        }
+      </div>
+
+      <div class="details">
+        <div class="text">
+          <p class="eyebrow">ORIGINAL · UNIKT VERK</p>
+          <h1>{{ painting.title }}</h1>
+          <p class="price">{{ price() }}</p>
+          @if (size()) {
+            <p class="size">{{ size() }}</p>
+          }
+          @if (painting.description) {
+            <p class="description">{{ painting.description }}</p>
+          }
+        </div>
+
+        <div class="buy">
+          <!-- TODO (sprint 3): start Checkout here. The button does nothing yet. -->
+          <button class="buy-button" type="button">KÖP</button>
+          <p class="note">Varje tavla är ett unikt original och kan bara säljas en gång.</p>
+        </div>
+      </div>
+    </article>
+  }
+</section>

@@ -1,0 +1,15 @@
+<a [routerLink]="['/painting', painting().id]" class="card-link">
+  <article class="card">
+    <div class="image">
+      @if (imageUrl()) {
+        <img [src]="imageUrl()" [alt]="painting().title" />
+      } @else {
+        <span class="placeholder">Ingen bild</span>
+      }
+    </div>
+    <div class="info">
+      <h3 class="title">{{ painting().title }}</h3>
+      <p class="price">{{ price() }}</p>
+    </div>
+  </article>
+</a>

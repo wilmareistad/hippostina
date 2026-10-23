@@ -2,6 +2,28 @@ import { Routes } from '@angular/router';
 import { adminGuard } from './core/admin.guard';
 
 export const routes: Routes = [
+  // Public pages share header and footer from Layout. Child routes are shown in its <router-outlet>.
+  {
+    path: '',
+    loadComponent: () => import('./layout/layout').then((m) => m.Layout),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () => import('./home/home-page/home-page').then((m) => m.HomePage),
+      },
+      {
+        path: 'malningar',
+        loadComponent: () =>
+          import('./gallery/gallery-page/gallery-page').then((m) => m.GalleryPage),
+      },
+      {
+        path: 'painting/:id',
+        loadComponent: () =>
+          import('./gallery/painting-page/painting-page').then((m) => m.PaintingPage),
+      },
+    ],
+  },
   // loadComponent: the admin code is only downloaded when someone opens these pages.
   {
     path: 'admin/login',

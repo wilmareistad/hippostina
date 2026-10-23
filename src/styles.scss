@@ -8,7 +8,7 @@
   --color-primary: #8D5428;
   --color-secondary: #C07A38;
   --accent-color: #287879;
-  --seccon-bg-color: #287879;
+  --seccond-bg-color: #F3EFE6;
   --error-colour: #b00020;
 
   /* Fonts */
@@ -25,6 +25,12 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
+}
+
+button,
+.button {
+  background-color: var(--color-text);
+  color: var(--color-bg);
 }
 
 h1, h2, h3, h4, h5, h6 {

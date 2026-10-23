@@ -1,0 +1,25 @@
+<section class="gallery">
+  <div class="info">
+    <p class="eyebrow">ORGINAL KONST TILL SALU</p>
+    <h1>Galleri & Shop</h1>
+    <p class="intro">
+      Här hittar du alla tillgängliga originalmålningar direkt från ateljén. Samtliga verk är
+      skapade med kol, råa mineralpigment och akryl på grov linneduk. Klicka på ett verk för att
+      reservera eller ställa en fråga.
+    </p>
+  </div>
+  @if (loading()) {
+    <p class="message">Laddar målningar…</p>
+  } @else if (failed()) {
+    <p class="message error">Det gick inte att hämta målningarna. Försök igen om en stund.</p>
+  } @else if (paintings().length === 0) {
+    <p class="message">Just nu finns inga tavlor till salu. Titta in igen snart!</p>
+  } @else {
+    <ul class="grid">
+      <!-- track: Angular needs a unique key per item to update the list efficiently. -->
+      @for (painting of paintings(); track painting.id) {
+        <li><app-painting-card [painting]="painting" /></li>
+      }
+    </ul>
+  }
+</section>
