@@ -42,6 +42,33 @@ export class PaintingService {
     return data;
   }
 
+  /**
+   * Paintings for the public shop, newest first, filtered available:
+   * RLS hides other paintings from visitors, but logged in admin can see all of them.
+   */
+  async listAvailable(): Promise<Painting[]> {
+    const { data, error } = await this.supabase
+      .from('paintings')
+      .select('*')
+      .eq('status', 'available')
+      .order('created_at', { ascending: false })
+      .overrideTypes<Painting[]>();
+    if (error) throw error;
+    return data;
+  }
+
+  /** One painting for the public product page, or null if it is missing or not `available`. */
+  async getAvailable(id: string): Promise<Painting | null> {
+    const { data, error } = await this.supabase
+      .from('paintings')
+      .select('*')
+      .eq('id', id)
+      .eq('status', 'available')
+      .maybeSingle<Painting>();
+    if (error) throw error;
+    return data;
+  }
+
   /** New paintings always start as `available` (the column default). */
   async create(input: PaintingInput): Promise<Painting> {
     const { data, error } = await this.supabase

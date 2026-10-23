@@ -1,0 +1,48 @@
+<header class="header">
+  <a class="brand" routerLink="/" (click)="closeMenu()">
+    <span class="brand-name">HIPPOSTINA</span>
+    <span class="brand-tagline">KONST AV STINA</span>
+  </a>
+
+  <button
+    class="menu-button"
+    type="button"
+    [attr.aria-expanded]="menuOpen()"
+    aria-controls="main-nav"
+    [attr.aria-label]="menuOpen() ? 'Stäng menyn' : 'Öppna menyn'"
+    (click)="toggleMenu()"
+  >
+    @if (menuOpen()) {
+      <svg lucideX aria-hidden="true"></svg>
+    } @else {
+      <svg lucideMenu aria-hidden="true"></svg>
+    }
+  </button>
+
+  <nav id="main-nav" class="nav" [class.open]="menuOpen()" aria-label="Huvudmeny">
+    <!--the page /kontakt are created in later steps. Not creatted yet. -->
+    <!-- exact: true, otherwise "/" would count as active on every page. -->
+    <a
+      routerLink="/"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="closeMenu()"
+      >Hem</a
+    >
+    <a routerLink="/malningar" routerLinkActive="active" (click)="closeMenu()">Målningar</a>
+    <a routerLink="/kontakt" routerLinkActive="active" (click)="closeMenu()">Kontakt</a>
+  </nav>
+</header>
+
+<main class="content">
+  <router-outlet />
+</main>
+
+<footer class="footer">
+  <p class="footer-brand">Hippostina</p>
+  <p class="footer-tagline">Målningar med kol, pigment och akryl</p>
+  <!-- this will be replaced with Stina's real contact details. -->
+  <a class="footer-link" href="mailto:stina@example.com">stina@example.com</a>
+  <a class="footer-link" routerLink="/admin/login">Admin</a>
+  <p class="footer-copy">© {{ year }} Hippostina</p>
+</footer>
