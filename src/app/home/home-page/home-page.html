@@ -18,3 +18,25 @@
     </div>
   </div>
 </section>
+
+<p class="info">{{ content.info }}</p>
+
+<section class="latest">
+  <p class="eyebrow">{{ content.latest.eyebrow }}</p>
+  <h2>{{ content.latest.title }}</h2>
+  <a class="all-link" routerLink="/malningar">{{ content.latest.linkText }}</a>
+
+  @if (loading()) {
+    <p class="message">Laddar målningar…</p>
+  } @else if (failed()) {
+    <p class="message error">Det gick inte att hämta målningarna. Försök igen om en stund.</p>
+  } @else if (paintings().length === 0) {
+    <p class="message">Just nu finns inga tavlor till salu. Titta in igen snart!</p>
+  } @else {
+    <ul class="grid">
+      @for (painting of paintings(); track painting.id) {
+        <li><app-painting-card [painting]="painting" /></li>
+      }
+    </ul>
+  }
+</section>
