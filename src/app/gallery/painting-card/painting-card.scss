@@ -17,6 +17,17 @@
   display: block;
   background: #fff;
   box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+// Only on devices with a real mouse and not for people who have asked for less motion.
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .card-link:hover .card {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+  }
 }
 
 .image {
