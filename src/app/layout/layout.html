@@ -1,4 +1,4 @@
-<header class="header">
+<header class="header" #header>
   <a class="brand" routerLink="/" (click)="closeMenu()">
     <span class="brand-name">HIPPOSTINA</span>
     <span class="brand-tagline">KONST AV STINA</span>
@@ -20,7 +20,6 @@
   </button>
 
   <nav id="main-nav" class="nav" [class.open]="menuOpen()" aria-label="Huvudmeny">
-    <!--the page /kontakt are created in later steps. Not creatted yet. -->
     <!-- exact: true, otherwise "/" would count as active on every page. -->
     <a
       routerLink="/"
@@ -30,7 +29,9 @@
       >Hem</a
     >
     <a routerLink="/malningar" routerLinkActive="active" (click)="closeMenu()">Målningar</a>
-    <a routerLink="/kontakt" routerLinkActive="active" (click)="closeMenu()">Kontakt</a>
+    <!-- The contact section is on the start page. No routerLinkActive: it ignores the fragment,
+         so "Kontakt" would be marked as active on the whole start page. -->
+    <a routerLink="/" fragment="kontakt" (click)="closeMenu()">Kontakt</a>
   </nav>
 </header>
 

@@ -13,8 +13,7 @@
     </div>
     <div class="actions">
       <a class="button primary" routerLink="/malningar">SE MÅLNINGAR</a>
-      <!-- link to the contact form when it exists. -->
-      <button class="button secondary" type="button">HÖR AV DIG</button>
+      <a class="button secondary" routerLink="/" fragment="kontakt">HÖR AV DIG</a>
     </div>
   </div>
 </section>
@@ -40,3 +39,6 @@
     </ul>
   }
 </section>
+
+<!-- id="kontakt": the target for links to /#kontakt (header menu and "HÖR AV DIG"). -->
+<app-contact-section id="kontakt" />

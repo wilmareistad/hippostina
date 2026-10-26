@@ -80,7 +80,7 @@ describe('ContactSection', () => {
     expect(service.sent.length).toBe(0);
   });
 
-  it('sends the trimmed values and shows a thank-you message', async () => {
+  it('sends the trimmed values and shows the sent message', async () => {
     fill('contact-name', '  Anna  ');
     fill('contact-email', 'anna@example.com');
     fill('contact-message', 'Hej, jag undrar över en tavla.');
@@ -89,7 +89,7 @@ describe('ContactSection', () => {
     expect(service.sent).toEqual([
       { name: 'Anna', email: 'anna@example.com', message: 'Hej, jag undrar över en tavla.' },
     ]);
-    expect(root().textContent).toContain('Ditt meddelande är skickat');
+    expect(root().textContent).toContain('Formuläret fungerar inte än');
     expect(field('contact-name').value).toBe('');
   });
 

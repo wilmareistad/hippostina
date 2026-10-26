@@ -45,4 +45,7 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     loadComponent: () => import('./admin/painting-form/painting-form').then((m) => m.PaintingForm),
   },
+  // '**' matches every path that no route above matched, for example an old or misspelled link.
+  // It must be last, because the router uses the first route that matches.
+  { path: '**', redirectTo: '' },
 ];
