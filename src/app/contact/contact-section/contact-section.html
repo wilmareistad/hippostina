@@ -85,7 +85,8 @@
     <!-- A live region announces its content to screen readers when it changes. -->
     <div role="status">
       @if (status() === 'sent') {
-        <p class="feedback success">Tack! Ditt meddelande är skickat. Stina svarar så snart hon kan.</p>
+        <!-- Resend is not working yet, the text will be changed when resend works-->
+        <p class="feedback success">Formuläret fungerar inte än.</p>
       }
     </div>
     @if (status() === 'error') {
