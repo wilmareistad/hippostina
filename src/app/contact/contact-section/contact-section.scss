@@ -1,0 +1,207 @@
+// Mobile first: text and details above the form. Two columns from 48rem.
+// Same width as the other start page sections: the margin lines the panel up with them.
+:host {
+  display: block;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+}
+
+.contact {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem 1rem;
+  background: var(--seccond-bg-color);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+}
+
+h2 {
+  margin: 0.5rem 0 1rem;
+  font-weight: 400;
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.lead {
+  margin: 0 0 1.5rem;
+  color: var(--secondary-color-text);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 1rem;
+  background: var(--color-bg);
+  list-style: none;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  svg {
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.15rem;
+    color: var(--color-primary);
+  }
+
+  a {
+    color: var(--color-text);
+  }
+}
+
+// Text for screen readers only (the icons carry the meaning visually).
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 0.75rem;
+  // A darker border than the page, so the field edge is visible (contrast for low vision).
+  border: 1px solid #8c877f;
+  background: #fff;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.875rem;
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--error-colour);
+  }
+}
+
+textarea {
+  resize: vertical;
+  min-height: 7rem;
+}
+
+.field-error {
+  margin: 0;
+  color: var(--error-colour);
+  font-size: 0.8125rem;
+}
+
+button {
+  padding: 0.9rem 1.5rem;
+  border: 0;
+  font: inherit;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--secondary-color-text);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+}
+
+.privacy {
+  margin: 0;
+  color: var(--secondary-color-text);
+  font-size: 0.75rem;
+}
+
+.feedback {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  background: var(--color-bg);
+  font-size: 0.875rem;
+
+  &.success {
+    border-left: 4px solid var(--accent-color);
+  }
+
+  &.error {
+    border-left: 4px solid var(--error-colour);
+    color: var(--error-colour);
+  }
+}
+
+@media (min-width: 48rem) {
+  :host {
+    padding: 0 2rem 4rem;
+  }
+
+  .contact {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    padding: 3rem;
+  }
+
+  h2 {
+    font-size: 2.5rem;
+  }
+
+  // On wide screens the details are plain lines, as in the design.
+  .details {
+    padding: 0;
+    background: none;
+  }
+
+  // The form is a white card next to the text.
+  .form {
+    padding: 1.5rem;
+    background: #fff;
+    align-self: start;
+  }
+
+  input,
+  textarea {
+    background: var(--color-bg);
+  }
+}
