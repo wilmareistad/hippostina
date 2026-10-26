@@ -1,0 +1,97 @@
+<section class="contact" aria-labelledby="contact-title">
+  <div class="intro">
+    <p class="eyebrow">{{ content.eyebrow }}</p>
+    <h2 id="contact-title">{{ content.title }}</h2>
+    <p class="lead">{{ content.intro }}</p>
+
+    <ul class="details">
+      <li>
+        <svg lucideMail aria-hidden="true"></svg>
+        <span class="visually-hidden">E-post:</span>
+        <a [href]="'mailto:' + content.email">{{ content.email }}</a>
+      </li>
+      <li>
+        <svg lucideCamera aria-hidden="true"></svg>
+        <span class="visually-hidden">Instagram:</span>
+        <a [href]="content.instagramUrl" target="_blank" rel="noopener noreferrer">{{
+          content.instagram
+        }}</a>
+      </li>
+      <li>
+        <svg lucideMapPin aria-hidden="true"></svg>
+        <span class="visually-hidden">Plats:</span>
+        <span>{{ content.location }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label for="contact-name">Namn</label>
+      <input
+        id="contact-name"
+        type="text"
+        formControlName="name"
+        autocomplete="name"
+        placeholder="Ditt namn"
+        [attr.maxlength]="limits.nameMax"
+        [attr.aria-invalid]="errorMessage('name') ? 'true' : null"
+        [attr.aria-describedby]="errorMessage('name') ? 'contact-name-error' : null"
+      />
+      @if (errorMessage('name'); as message) {
+        <p id="contact-name-error" class="field-error">{{ message }}</p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="contact-email">E-postadress</label>
+      <input
+        id="contact-email"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        placeholder="din.epost@doman.se"
+        [attr.maxlength]="limits.emailMax"
+        [attr.aria-invalid]="errorMessage('email') ? 'true' : null"
+        [attr.aria-describedby]="errorMessage('email') ? 'contact-email-error' : null"
+      />
+      @if (errorMessage('email'); as message) {
+        <p id="contact-email-error" class="field-error">{{ message }}</p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="contact-message">Meddelande</label>
+      <textarea
+        id="contact-message"
+        formControlName="message"
+        rows="5"
+        placeholder="Vilken tavla är du nyfiken på?"
+        [attr.maxlength]="limits.messageMax"
+        [attr.aria-invalid]="errorMessage('message') ? 'true' : null"
+        [attr.aria-describedby]="errorMessage('message') ? 'contact-message-error' : null"
+      ></textarea>
+      @if (errorMessage('message'); as message) {
+        <p id="contact-message-error" class="field-error">{{ message }}</p>
+      }
+    </div>
+
+    <button type="submit" [disabled]="status() === 'sending'">
+      {{ status() === 'sending' ? 'SKICKAR…' : 'SKICKA MEDDELANDE' }}
+    </button>
+
+    <p class="privacy">{{ content.privacyNote }}</p>
+
+    <!-- A live region announces its content to screen readers when it changes. -->
+    <div role="status">
+      @if (status() === 'sent') {
+        <p class="feedback success">Tack! Ditt meddelande är skickat. Stina svarar så snart hon kan.</p>
+      }
+    </div>
+    @if (status() === 'error') {
+      <p class="feedback error" role="alert">
+        Det gick inte att skicka meddelandet. Försök igen om en stund.
+      </p>
+    }
+  </form>
+</section>
