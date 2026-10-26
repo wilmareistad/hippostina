@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { ViewportScroller } from '@angular/common';
+import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { LucideMenu, LucideX } from '@lucide/angular';
 
@@ -13,6 +14,14 @@ export class Layout {
   // A signal holds state that the template reacts to: when it changes, the view updates.
   protected readonly menuOpen = signal(false);
   protected readonly year = new Date().getFullYear();
+
+  private readonly header = viewChild<ElementRef<HTMLElement>>('header');
+
+  constructor() {
+    // The header is sticky
+    // The function runs at each scroll, so the current header height is used, also after a resize.
+    inject(ViewportScroller).setOffset(() => [0, this.header()?.nativeElement.offsetHeight ?? 0]);
+  }
 
   protected toggleMenu(): void {
     this.menuOpen.update((open) => !open);
