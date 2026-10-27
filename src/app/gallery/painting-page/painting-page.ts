@@ -7,7 +7,7 @@ import { Painting } from '../../core/painting';
 import { PaintingService } from '../../core/painting.service';
 import { formatPrice } from '../../core/price';
 
-/** Public product page (/painting/:id): one available painting, delivery choice and buy button. */
+/** Public product page (/malningar/:id): one available painting, delivery choice and buy button. */
 @Component({
   selector: 'app-painting-page',
   imports: [RouterLink],

@@ -18,7 +18,7 @@ export const routes: Routes = [
           import('./gallery/gallery-page/gallery-page').then((m) => m.GalleryPage),
       },
       {
-        path: 'painting/:id',
+        path: 'malningar/:id',
         loadComponent: () =>
           import('./gallery/painting-page/painting-page').then((m) => m.PaintingPage),
       },
