@@ -19,24 +19,55 @@
         }
       </div>
 
+      <!-- Written in mobile order buy button before info, so screen readers follow what is seen.
+           From 48rem the CSS moves .buy below .facts. -->
       <div class="details">
-        <div class="text">
+        <div class="summary">
           <p class="eyebrow">ORIGINAL · UNIKT VERK</p>
           <h1>{{ painting.title }}</h1>
           <p class="price">{{ price() }}</p>
-          @if (size()) {
-            <p class="size">{{ size() }}</p>
-          }
-          @if (painting.description) {
-            <p class="description">{{ painting.description }}</p>
-          }
         </div>
 
         <div class="buy">
-          <!-- TODO (sprint 3): start Checkout here. The button does nothing yet. -->
-          <button class="buy-button" type="button">KÖP</button>
+          <!-- Only pickup for now. A second radio button is added here when shipping comes. -->
+          <fieldset class="delivery">
+            <legend>Leverans</legend>
+            <label class="option">
+              <input
+                type="radio"
+                name="delivery"
+                value="pickup"
+                [checked]="delivery() === 'pickup'"
+                (change)="delivery.set('pickup')"
+              />
+              <span>
+                Hämtning
+                <span class="option-note">Tavlan hämtas i Köping, Sverige.</span>
+              </span>
+            </label>
+          </fieldset>
+
+          <button class="buy-button" type="button" [disabled]="buying()" (click)="buy()">
+            {{ buying() ? 'GÅR TILL BETALNING…' : 'KÖP' }}
+          </button>
+
+          @if (buyError(); as message) {
+            <p class="error" role="alert">{{ message }}</p>
+          }
+
           <p class="note">Varje tavla är ett unikt original och kan bara säljas en gång.</p>
         </div>
+
+        @if (size() || painting.description) {
+          <div class="facts">
+            @if (size()) {
+              <p class="size">{{ size() }}</p>
+            }
+            @if (painting.description) {
+              <p class="description">{{ painting.description }}</p>
+            }
+          </div>
+        }
       </div>
     </article>
   }

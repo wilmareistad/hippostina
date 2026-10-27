@@ -1,26 +1,36 @@
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { CheckoutError, DeliveryMethod } from '../../core/checkout';
+import { CheckoutService } from '../../core/checkout.service';
 import { Painting } from '../../core/painting';
 import { PaintingService } from '../../core/painting.service';
 import { formatPrice } from '../../core/price';
 
-/** Public product page (/painting/:id): one available painting. No buy button yet (sprint 3). */
+/** Public product page (/painting/:id): one available painting, delivery choice and buy button. */
 @Component({
   selector: 'app-painting-page',
   imports: [RouterLink],
   templateUrl: './painting-page.html',
   styleUrl: './painting-page.scss',
+  // Listens to an event on window for as long as this component is on screen.
+  host: { '(window:pageshow)': 'onPageShow($event)' },
 })
 export class PaintingPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly paintingService = inject(PaintingService);
+  private readonly checkoutService = inject(CheckoutService);
 
   protected readonly painting = signal<Painting | null>(null);
   protected readonly loading = signal(true);
   /** True when the painting is missing, not available, the id is invalid or loading failed. */
   protected readonly notFound = signal(false);
+
+  protected readonly delivery = signal<DeliveryMethod>('pickup');
+  /** True from the click until the browser leaves for Stripe, or until an error is shown. */
+  protected readonly buying = signal(false);
+  protected readonly buyError = signal<string | null>(null);
 
   protected readonly imageUrl = computed(() => {
     const path = this.painting()?.image_path;
@@ -42,6 +52,37 @@ export class PaintingPage implements OnInit {
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => void this.load(params.get('id')));
+  }
+
+  protected async buy(): Promise<void> {
+    const painting = this.painting();
+    if (!painting || this.buying()) return;
+
+    this.buying.set(true);
+    this.buyError.set(null);
+    try {
+      // On success the browser leaves the page, so the button stays disabled.
+      await this.checkoutService.start(painting.id, this.delivery());
+    } catch (error) {
+      this.buyError.set(
+        error instanceof CheckoutError && error.reason === 'unavailable'
+          ? 'Tavlan är tyvärr inte tillgänglig längre. Någon annan kan vara mitt i ett köp av den just nu.'
+          : 'Något gick fel och köpet kunde inte startas. Försök igen om en stund.',
+      );
+      this.buying.set(false);
+    }
+  }
+
+  /**
+   * persisted is true when the browser shows this page from its back/forward cache, for example
+   * when the customer presses Back on Stripe's page. The page then comes back exactly as it was
+   * left, with the button disabled, so turn it on again.
+   */
+  protected onPageShow(event: PageTransitionEvent): void {
+    if (event.persisted) {
+      // TODO cancel the saved Checkout session here, then load the painting again.
+      this.buying.set(false);
+    }
   }
 
   private async load(id: string | null): Promise<void> {
