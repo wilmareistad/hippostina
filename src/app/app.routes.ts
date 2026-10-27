@@ -22,6 +22,20 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./gallery/painting-page/painting-page').then((m) => m.PaintingPage),
       },
+      // Stripe redirects here after checkout. The paths must match success_url and cancel_url
+      // in the create-checkout Edge Function.
+      {
+        path: 'kop/tack',
+        loadComponent: () =>
+          import('./purchase/purchase-thanks/purchase-thanks').then((m) => m.PurchaseThanks),
+      },
+      {
+        path: 'kop/avbrutet',
+        loadComponent: () =>
+          import('./purchase/purchase-cancelled/purchase-cancelled').then(
+            (m) => m.PurchaseCancelled,
+          ),
+      },
     ],
   },
   // loadComponent: the admin code is only downloaded when someone opens these pages.
