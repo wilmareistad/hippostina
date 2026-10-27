@@ -8,6 +8,15 @@ export type DeliveryMethod = 'pickup';
  */
 export type CheckoutErrorReason = 'unavailable' | 'failed';
 
+/**
+ * A purchase that has been sent to Stripe but not finished, saved in sessionStorage so the cancel
+ * page and the product page can cancel it when the customer comes back.
+ */
+export interface PendingCheckout {
+  sessionId: string;
+  paintingId: string;
+}
+
 export class CheckoutError extends Error {
   constructor(readonly reason: CheckoutErrorReason) {
     super(`Checkout could not start: ${reason}`);
