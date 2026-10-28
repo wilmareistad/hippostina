@@ -434,3 +434,10 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/cancel-checkout/deno.json"
 entrypoint = "./functions/cancel-checkout/index.ts"
+
+[functions.stripe-webhook]
+enabled = true
+# Stripe has no Supabase JWT. The function checks the Stripe signature instead.
+verify_jwt = false
+import_map = "./functions/stripe-webhook/deno.json"
+entrypoint = "./functions/stripe-webhook/index.ts"
