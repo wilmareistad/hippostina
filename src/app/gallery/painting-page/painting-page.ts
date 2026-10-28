@@ -31,6 +31,8 @@ export class PaintingPage implements OnInit {
   /** True from the click until the browser leaves for Stripe, or until an error is shown. */
   protected readonly buying = signal(false);
   protected readonly buyError = signal<string | null>(null);
+  /** True when the customer came back from Stripe without paying and the painting was released. */
+  protected readonly cancelled = signal(false);
 
   protected readonly imageUrl = computed(() => {
     const path = this.painting()?.image_path;
@@ -60,6 +62,7 @@ export class PaintingPage implements OnInit {
 
     this.buying.set(true);
     this.buyError.set(null);
+    this.cancelled.set(false);
     try {
       // On success the browser leaves the page, so the button stays disabled.
       await this.checkoutService.start(painting.id, this.delivery());
@@ -80,8 +83,12 @@ export class PaintingPage implements OnInit {
    */
   protected onPageShow(event: PageTransitionEvent): void {
     if (event.persisted) {
-      // TODO cancel the saved Checkout session here, then load the painting again.
       this.buying.set(false);
+      // Angular does not run again when the page comes from the cache, so load here.
+      // load() cancels the purchase first if it was for this painting.
+      if (this.checkoutService.pending()) {
+        void this.load(this.route.snapshot.paramMap.get('id'));
+      }
     }
   }
 
@@ -89,12 +96,22 @@ export class PaintingPage implements OnInit {
     this.loading.set(true);
     this.notFound.set(false);
     this.painting.set(null);
+    this.cancelled.set(false);
     try {
+      // Back from Stripe without paying: release the painting first, otherwise it is still
+      // reserved and getAvailable() finds nothing.
+      const cancelled =
+        id !== null && this.checkoutService.pending()?.paintingId === id
+          ? await this.checkoutService.cancelPending()
+          : false;
       const painting = id ? await this.paintingService.getAvailable(id) : null;
       // Ignore the answer if the user has already moved on to another painting.
       if (id !== this.route.snapshot.paramMap.get('id')) return;
       this.painting.set(painting);
       this.notFound.set(painting === null);
+      // cancelPending() answers OK even when nothing was released (for example a paid session),
+      // so only say so when the painting really is available again.
+      this.cancelled.set(cancelled && painting !== null);
     } catch {
       // An invalid uuid makes Postgres return an error. Show the same message as "not found".
       if (id !== this.route.snapshot.paramMap.get('id')) return;

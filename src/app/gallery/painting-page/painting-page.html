@@ -10,6 +10,11 @@
       <a class="link" routerLink="/malningar">Se alla tillgängliga målningar</a>
     </div>
   } @else if (painting(); as painting) {
+    <!-- Outside the article, so it does not become a cell in the two-column grid. -->
+    @if (cancelled()) {
+      <p class="notice" role="status">Köpet avbröts. Tavlan finns kvar.</p>
+    }
+
     <article class="painting">
       <div class="image">
         @if (imageUrl()) {
