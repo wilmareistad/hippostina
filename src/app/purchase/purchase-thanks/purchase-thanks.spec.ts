@@ -1,18 +1,22 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { CheckoutService } from '../../core/checkout.service';
 import { PurchaseThanks } from './purchase-thanks';
 
 describe('PurchaseThanks', () => {
+  let fixture: ComponentFixture<PurchaseThanks>;
   let root: HTMLElement;
+  let clearPending: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
+    clearPending = vi.fn();
     // provideRouter([]) gives RouterLink a router, so the link gets a real href.
     await TestBed.configureTestingModule({
       imports: [PurchaseThanks],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), { provide: CheckoutService, useValue: { clearPending } }],
     }).compileComponents();
 
-    const fixture = TestBed.createComponent(PurchaseThanks);
+    fixture = TestBed.createComponent(PurchaseThanks);
     fixture.detectChanges();
     root = fixture.nativeElement as HTMLElement;
   });
@@ -23,5 +27,13 @@ describe('PurchaseThanks', () => {
 
   it('links back to the gallery', () => {
     expect(root.querySelector('a')?.getAttribute('href')).toBe('/malningar');
+  });
+
+  it('clears the pending purchase when the page is left, not when it opens', () => {
+    expect(clearPending).not.toHaveBeenCalled();
+
+    fixture.destroy();
+
+    expect(clearPending).toHaveBeenCalledOnce();
   });
 });
