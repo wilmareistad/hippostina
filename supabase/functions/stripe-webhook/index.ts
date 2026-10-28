@@ -16,9 +16,13 @@ const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
 // Deno has no Node crypto module, so the signature is checked with the Web Crypto API.
 const cryptoProvider = Stripe.createSubtleCryptoProvider();
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+// Same list as in create-checkout.
+const DELIVERY_METHODS = ["pickup"];
+
 export default {
   // cors: false because only Stripe's servers call this, never a browser.
-  fetch: withSupabase({ auth: "none", cors: false }, async (req) => {
+  fetch: withSupabase({ auth: "none", cors: false }, async (req, ctx) => {
     if (req.method !== "POST") {
       return Response.json({ error: "Method not allowed" }, { status: 405 });
     }
@@ -53,6 +57,74 @@ export default {
     }
 
     console.log("Received event:", event.type, event.id);
+
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object;
+
+      // Card only, so a completed session should always be paid. Check anyway: never sell unpaid.
+      if (session.payment_status !== "paid") {
+        console.warn("Session is not paid:", session.id, session.payment_status);
+        return Response.json({ received: true });
+      }
+
+      // create-checkout always sets both. Without them the session was not created by our shop
+      // (for example `stripe trigger`), so there is nothing to save. 200, since a retry cannot help.
+      const paintingId = session.metadata?.painting_id;
+      const delivery = session.metadata?.delivery;
+      if (
+        !paintingId ||
+        !UUID_PATTERN.test(paintingId) ||
+        !delivery ||
+        !DELIVERY_METHODS.includes(delivery)
+      ) {
+        console.warn("Session is not from our shop:", session.id);
+        return Response.json({ received: true });
+      }
+
+      // Save the order first: the customer has paid, so the order must exist whatever happens to
+      // the painting. ignoreDuplicates (on conflict do nothing) makes a repeated event harmless.
+      const { error: orderError } = await ctx.supabaseAdmin
+        .from("orders")
+        .upsert(
+          {
+            painting_id: paintingId,
+            stripe_session_id: session.id,
+            customer_email: session.customer_details?.email,
+            customer_name: session.customer_details?.individual_name,
+            amount_ore: session.amount_total,
+            delivery_method: delivery,
+          },
+          { onConflict: "stripe_session_id", ignoreDuplicates: true },
+        );
+
+      if (orderError) {
+        // 500 makes Stripe send the event again later.
+        console.error("Order error:", orderError);
+        return Response.json({ error: "Could not save order" }, { status: 500 });
+      }
+
+      // Only the painting reserved for this session. "sold" is included so a repeated event
+      // matches again instead of looking like a mismatch. checkout_session_id is kept on a sold
+      // painting for the same reason.
+      const { data: sold, error: soldError } = await ctx.supabaseAdmin
+        .from("paintings")
+        .update({ status: "sold", reserved_until: null })
+        .eq("id", paintingId)
+        .eq("checkout_session_id", session.id)
+        .in("status", ["reserved", "sold"])
+        .select("id")
+        .maybeSingle();
+
+      if (soldError) {
+        console.error("Sold error:", soldError);
+        return Response.json({ error: "Could not mark painting as sold" }, { status: 500 });
+      }
+      if (!sold) {
+        // Should not happen, since the reservation outlives the session. The order is saved,
+        // so the admin can sort it out.
+        console.error("Paid session did not match a reserved painting:", session.id, paintingId);
+      }
+    }
 
     // Events we do not handle also get 200, otherwise Stripe keeps sending them again.
     return Response.json({ received: true });
