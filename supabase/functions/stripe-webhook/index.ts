@@ -126,6 +126,23 @@ export default {
       }
     }
 
+    if (event.type === "checkout.session.expired") {
+      const session = event.data.object;
+
+      // Only the painting still reserved for this session, so no metadata is needed. No row
+      // matching is fine: cancel-checkout may already have released it.
+      const { error: releaseError } = await ctx.supabaseAdmin
+        .from("paintings")
+        .update({ status: "available", reserved_until: null, checkout_session_id: null })
+        .eq("checkout_session_id", session.id)
+        .eq("status", "reserved");
+
+      if (releaseError) {
+        console.error("Release error:", releaseError);
+        return Response.json({ error: "Could not release painting" }, { status: 500 });
+      }
+    }
+
     // Events we do not handle also get 200, otherwise Stripe keeps sending them again.
     return Response.json({ received: true });
   }),
