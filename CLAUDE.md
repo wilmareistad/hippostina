@@ -70,7 +70,7 @@ Web shop for Hippostina, the company of the artist Stina. Built as an exam proje
 
 ## Conventions
 - Code, comments and commit messages in English.
-- UI language: TODO (decide Swedish or English).
+- UI language: Swedish.
 - Angular: standalone components, strict TypeScript, kebab-case file names, one component per folder.
 - Edge Functions live in `supabase/functions/<function-name>/` (Deno + TypeScript, packages via `npm:` imports).
 - Database changes only through migrations in `supabase/migrations/`.

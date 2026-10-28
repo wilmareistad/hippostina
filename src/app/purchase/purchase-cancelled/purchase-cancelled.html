@@ -1,0 +1,22 @@
+<section class="page cancelled">
+  <h1>Köpet avbröts</h1>
+  <!-- role="status" makes screen readers read the text again when it changes. -->
+  <p role="status">
+    @switch (state()) {
+      @case ('cancelling') {
+        Ingen betalning har gjorts. Vi avbryter köpet …
+      }
+      @case ('released') {
+        Ingen betalning har gjorts. Tavlan är tillgänglig igen.
+      }
+      @case ('failed') {
+        Ingen betalning har gjorts. Tavlan blir tillgänglig för köp igen inom kort.
+      }
+    }
+  </p>
+  @if (state() === 'released' && paintingId(); as id) {
+    <a class="button" [routerLink]="['/malningar', id]">TILLBAKA TILL TAVLAN</a>
+  } @else {
+    <a class="button" routerLink="/malningar">TILLBAKA TILL SHOPPEN</a>
+  }
+</section>
