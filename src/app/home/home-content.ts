@@ -9,8 +9,8 @@ export const HOME_CONTENT = {
     ],
     imageAlt: 'Stina målar i sin ateljé',
   },
-  // Kept general until the payment methods are decided (sprint 3).
-  info: 'Originalmålningar på spänd linneduk • Hämtas eller skickas • Säker betalning online',
+  // Pickup only for now. Update when shipping is added (sprint 5, Should).
+  info: 'Originalmålningar målade av konstnären Stina • Hämtas i Köping • Säker betalning online',
   latest: {
     eyebrow: 'TILL SALU',
     title: 'Mina senaste målningar',

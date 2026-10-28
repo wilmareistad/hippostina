@@ -414,15 +414,23 @@ enabled = true
 # and column/key alignment. Set to "null" to emit raw, unformatted SQL.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
 
-[functions.create-checkout-test]
+[functions.create-checkout]
 enabled = true
-# Only the logged-in admin calls this function, so keep the platform JWT check on.
-# The function itself also checks the JWT (withSupabase) and is_admin().
-verify_jwt = true
-import_map = "./functions/create-checkout-test/deno.json"
+# Visitors are not logged in and the publishable key is not a JWT, so the platform JWT check
+# must be off. The function itself checks the publishable key (withSupabase auth: "publishable").
+verify_jwt = false
+import_map = "./functions/create-checkout/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
-entrypoint = "./functions/create-checkout-test/index.ts"
+entrypoint = "./functions/create-checkout/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
-# static_files = [ "./functions/create-checkout-test/*.html" ]
+# static_files = [ "./functions/create-checkout/*.html" ]
+
+[functions.cancel-checkout]
+enabled = true
+# Visitors are not logged in and the publishable key is not a JWT, so the platform JWT check
+# must be off. The function itself checks the publishable key (withSupabase auth: "publishable").
+verify_jwt = false
+import_map = "./functions/cancel-checkout/deno.json"
+entrypoint = "./functions/cancel-checkout/index.ts"

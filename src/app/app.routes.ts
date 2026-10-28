@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from './core/admin.guard';
+import { pendingCheckoutGuard } from './core/pending-checkout.guard';
 
 export const routes: Routes = [
   // Public pages share header and footer from Layout. Child routes are shown in its <router-outlet>.
@@ -18,9 +19,25 @@ export const routes: Routes = [
           import('./gallery/gallery-page/gallery-page').then((m) => m.GalleryPage),
       },
       {
-        path: 'painting/:id',
+        path: 'malningar/:id',
         loadComponent: () =>
           import('./gallery/painting-page/painting-page').then((m) => m.PaintingPage),
+      },
+      // Stripe redirects here after checkout. The paths must match success_url and cancel_url
+      // in the create-checkout Edge Function.
+      {
+        path: 'kop/tack',
+        canActivate: [pendingCheckoutGuard],
+        loadComponent: () =>
+          import('./purchase/purchase-thanks/purchase-thanks').then((m) => m.PurchaseThanks),
+      },
+      {
+        path: 'kop/avbrutet',
+        canActivate: [pendingCheckoutGuard],
+        loadComponent: () =>
+          import('./purchase/purchase-cancelled/purchase-cancelled').then(
+            (m) => m.PurchaseCancelled,
+          ),
       },
     ],
   },
