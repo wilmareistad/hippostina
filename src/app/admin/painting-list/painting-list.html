@@ -47,9 +47,15 @@
               <button type="button" (click)="archive(painting)" [disabled]="busyId() !== null">
                 Arkivera
               </button>
+              <button type="button" (click)="askMarkSold(painting)" [disabled]="busyId() !== null">
+                Markera som såld
+              </button>
             } @else if (painting.status === 'archived') {
               <button type="button" (click)="restore(painting)" [disabled]="busyId() !== null">
                 Återställ
+              </button>
+              <button type="button" (click)="askMarkSold(painting)" [disabled]="busyId() !== null">
+                Markera som såld
               </button>
               <button type="button" (click)="askDelete(painting)" [disabled]="busyId() !== null">
                 Radera permanent
@@ -61,6 +67,13 @@
     </ul>
   }
 </section>
+
+<dialog #markSoldDialog (close)="paintingToMarkSold.set(null)">
+  <p>Markera "{{ paintingToMarkSold()?.title }}" som såld på annat håll?</p>
+  <p>Tavlan försvinner från shopen och kan inte längre köpas online.</p>
+  <button type="button" (click)="cancelMarkSold()">Avbryt</button>
+  <button type="button" (click)="confirmMarkSold()">Markera som såld</button>
+</dialog>
 
 <!-- showModal() opens it on top of the page, Esc closes it. -->
 <dialog #deleteDialog (close)="paintingToDelete.set(null)">

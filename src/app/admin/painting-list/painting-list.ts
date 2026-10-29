@@ -38,6 +38,12 @@ export class PaintingList {
   /** The native <dialog> element in the template (#deleteDialog). */
   private readonly deleteDialog = viewChild.required<ElementRef<HTMLDialogElement>>('deleteDialog');
 
+  /** The painting "sold elsewhere" confirmation is about, or null when it is closed. */
+  protected readonly paintingToMarkSold = signal<Painting | null>(null);
+  /** The native <dialog> element in the template (#markSoldDialog). */
+  private readonly markSoldDialog =
+    viewChild.required<ElementRef<HTMLDialogElement>>('markSoldDialog');
+
   /** Recalculated automatically when "paintings" or "selectedStatus" change. */
   protected readonly visiblePaintings = computed(() =>
     this.paintings().filter((painting) => painting.status === this.selectedStatus()),
@@ -74,6 +80,29 @@ export class PaintingList {
   /** Undo an archive: the painting becomes available again. */
   protected async restore(painting: Painting): Promise<void> {
     await this.runAction(painting, () => this.paintingService.restore(painting.id));
+  }
+
+  /** Ask first before marking a painting as sold elsewhere. */
+  protected askMarkSold(painting: Painting): void {
+    this.paintingToMarkSold.set(painting);
+    this.markSoldDialog().nativeElement.showModal();
+  }
+
+  protected cancelMarkSold(): void {
+    this.markSoldDialog().nativeElement.close();
+    this.paintingToMarkSold.set(null);
+  }
+
+  /** If the admin confirmed, only available or archived paintings can be marked as sold. */
+  protected async confirmMarkSold(): Promise<void> {
+    const painting = this.paintingToMarkSold();
+    this.cancelMarkSold();
+    if (!painting) return;
+    await this.runAction(
+      painting,
+      () => this.paintingService.markSold(painting.id),
+      `Kunde inte markera "${painting.title}" som såld. Kanske hann en kund reservera den. Listan har uppdaterats.`,
+    );
   }
 
   /** Step 1 of a permanent delete: ask first, because it cannot be undone. */
