@@ -1,6 +1,7 @@
 import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Painting, PaintingStatus } from '../../core/painting';
+import { OrderService } from '../../core/order.service';
 import { PaintingService } from '../../core/painting.service';
 import { formatPrice } from '../../core/price';
 
@@ -21,12 +22,15 @@ const STATUS_LABELS: Record<PaintingStatus, string> = {
 })
 export class PaintingList {
   private readonly paintingService = inject(PaintingService);
+  private readonly orderService = inject(OrderService);
 
   protected readonly tabs = (Object.keys(STATUS_LABELS) as PaintingStatus[]).map((status) => ({
     status,
     label: STATUS_LABELS[status],
   }));
   protected readonly paintings = signal<Painting[]>([]);
+  /** Ids of paintings that have an order (sold online). Those cannot be put back on sale. */
+  protected readonly orderedPaintingIds = signal<ReadonlySet<string>>(new Set());
   protected readonly selectedStatus = signal<PaintingStatus>('available');
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
@@ -80,6 +84,37 @@ export class PaintingList {
   /** Undo an archive: the painting becomes available again. */
   protected async restore(painting: Painting): Promise<void> {
     await this.runAction(painting, () => this.paintingService.restore(painting.id));
+  }
+
+  /** Undo is only for paintings marked as sold elsewhere, which have no order. */
+  protected canUnsell(painting: Painting): boolean {
+    return painting.status === 'sold' && !this.orderedPaintingIds().has(painting.id);
+  }
+
+  /** The painting the "put back on sale" confirmation is about, or null when it is closed. */
+  protected readonly paintingToUnsell = signal<Painting | null>(null);
+  /** The native <dialog> element in the template (#unsellDialog). */
+  private readonly unsellDialog = viewChild.required<ElementRef<HTMLDialogElement>>('unsellDialog');
+
+  protected askUnsell(painting: Painting): void {
+    this.paintingToUnsell.set(painting);
+    this.unsellDialog().nativeElement.showModal();
+  }
+
+  protected cancelUnsell(): void {
+    this.unsellDialog().nativeElement.close();
+    this.paintingToUnsell.set(null);
+  }
+
+  protected async confirmUnsell(): Promise<void> {
+    const painting = this.paintingToUnsell();
+    this.cancelUnsell();
+    if (!painting) return;
+    await this.runAction(
+      painting,
+      () => this.paintingService.unsell(painting.id),
+      `Kunde inte lägga ut "${painting.title}" till försäljning igen. Har den sålts online går det inte. Listan har uppdaterats.`,
+    );
   }
 
   /** Ask first before marking a painting as sold elsewhere. */
@@ -150,7 +185,12 @@ export class PaintingList {
 
   private async load(): Promise<void> {
     try {
-      this.paintings.set(await this.paintingService.list());
+      const [paintings, orderedIds] = await Promise.all([
+        this.paintingService.list(),
+        this.orderService.listPaintingIds(),
+      ]);
+      this.paintings.set(paintings);
+      this.orderedPaintingIds.set(orderedIds);
     } catch (error) {
       console.error(error);
       this.error.set('Kunde inte hämta tavlorna. Försök igen.');

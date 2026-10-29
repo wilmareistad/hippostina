@@ -60,6 +60,10 @@
               <button type="button" (click)="askDelete(painting)" [disabled]="busyId() !== null">
                 Radera permanent
               </button>
+            } @else if (canUnsell(painting)) {
+              <button type="button" (click)="askUnsell(painting)" [disabled]="busyId() !== null">
+                Ångra såld
+              </button>
             }
           </div>
         </li>
@@ -73,6 +77,13 @@
   <p>Tavlan försvinner från shopen och kan inte längre köpas online.</p>
   <button type="button" (click)="cancelMarkSold()">Avbryt</button>
   <button type="button" (click)="confirmMarkSold()">Markera som såld</button>
+</dialog>
+
+<dialog #unsellDialog (close)="paintingToUnsell.set(null)">
+  <p>Lägga ut "{{ paintingToUnsell()?.title }}" till försäljning igen?</p>
+  <p>Tavlan blir tillgänglig för köp i shopen direkt.</p>
+  <button type="button" (click)="cancelUnsell()">Avbryt</button>
+  <button type="button" (click)="confirmUnsell()">Lägg ut till försäljning</button>
 </dialog>
 
 <!-- showModal() opens it on top of the page, Esc closes it. -->

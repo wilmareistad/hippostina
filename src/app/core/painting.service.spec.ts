@@ -46,3 +46,41 @@ describe('PaintingService.markSold', () => {
     await expect(service.markSold(PAINTING_ID)).rejects.toBe(error);
   });
 });
+
+describe('PaintingService.unsell', () => {
+  let update: ReturnType<typeof vi.fn>;
+  let eq: ReturnType<typeof vi.fn>;
+  let is: ReturnType<typeof vi.fn>;
+  let select: ReturnType<typeof vi.fn>;
+  let service: PaintingService;
+
+  beforeEach(() => {
+    // from('paintings').update(...).eq('id').eq('status').is(...).select(...) in one chain.
+    select = vi.fn().mockResolvedValue({ data: [{ id: PAINTING_ID }], error: null });
+    is = vi.fn().mockReturnValue({ select });
+    eq = vi.fn();
+    eq.mockReturnValue({ eq, is }); // eq returns an object that has eq again (two filters in a row)
+    update = vi.fn().mockReturnValue({ eq });
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: SupabaseService, useValue: { client: { from: () => ({ update }) } } },
+      ],
+    });
+    service = TestBed.inject(PaintingService);
+  });
+
+  it('sets available, but only for a sold painting without a checkout session', async () => {
+    await service.unsell(PAINTING_ID);
+
+    expect(update).toHaveBeenCalledWith({ status: 'available' });
+    expect(eq).toHaveBeenCalledWith('id', PAINTING_ID);
+    expect(eq).toHaveBeenCalledWith('status', 'sold');
+    expect(is).toHaveBeenCalledWith('checkout_session_id', null);
+  });
+
+  it('throws when no row changed (for example it was sold online)', async () => {
+    select.mockResolvedValue({ data: [], error: null });
+
+    await expect(service.unsell(PAINTING_ID)).rejects.toThrow('cannot become available');
+  });
+});

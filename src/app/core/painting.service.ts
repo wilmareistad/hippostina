@@ -112,6 +112,25 @@ export class PaintingService {
   }
 
   /**
+   * Undo "sold elsewhere": the painting goes back on sale. Only for paintings without a
+   * `checkout_session_id`: the webhook keeps it on a painting sold online, so a painting with an
+   * order can never be put back on sale here, even if the list is out of date.
+   */
+  async unsell(id: string): Promise<void> {
+    const { data, error } = await this.supabase
+      .from('paintings')
+      .update({ status: 'available' })
+      .eq('id', id)
+      .eq('status', 'sold')
+      .is('checkout_session_id', null)
+      .select('id');
+    if (error) throw error;
+    if (data.length === 0) {
+      throw new Error('Painting is not sold elsewhere, so it cannot become available.');
+    }
+  }
+
+  /**
    * Permanently deletes a painting that is archived. RLS only allows archived ones, and the
    * database refuses if the painting has an order. The image file is removed afterwards.
    */
