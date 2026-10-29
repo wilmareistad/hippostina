@@ -95,12 +95,20 @@ export class PaintingService {
   async archive(id: string): Promise<void> {
     // Only archive paintings that are available. A reserved or sold painting must not
     // be changed here, because a customer may be paying for it right now.
-    await this.setStatus(id, 'available', 'archived');
+    await this.setStatus(id, ['available'], 'archived');
   }
 
   /** Undo an archive. */
   async restore(id: string): Promise<void> {
-    await this.setStatus(id, 'archived', 'available');
+    await this.setStatus(id, ['archived'], 'available');
+  }
+
+  /**
+   * The painting was sold somewhere else. Only `available` or `archived`
+   * paintings: a reserved one may be in checkout right now, and a sold one is already sold.
+   */
+  async markSold(id: string): Promise<void> {
+    await this.setStatus(id, ['available', 'archived'], 'sold');
   }
 
   /**
@@ -158,17 +166,17 @@ export class PaintingService {
     return this.supabase.storage.from(IMAGE_BUCKET).getPublicUrl(path).data.publicUrl;
   }
 
-  /** Changes status only if the painting currently has from (one atomic update). */
-  private async setStatus(id: string, from: Painting['status'], to: Painting['status']) {
+  /** Changes status only if the painting currently has one of the "from" statuses (one atomic update). */
+  private async setStatus(id: string, from: Painting['status'][], to: Painting['status']) {
     const { data, error } = await this.supabase
       .from('paintings')
       .update({ status: to })
       .eq('id', id)
-      .eq('status', from)
+      .in('status', from)
       .select('id');
     if (error) throw error;
     if (data.length === 0) {
-      throw new Error(`Painting is not ${from}, so it cannot become ${to}.`);
+      throw new Error(`Painting is not ${from.join(' or ')}, so it cannot become ${to}.`);
     }
   }
 }
