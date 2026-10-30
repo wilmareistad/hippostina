@@ -27,6 +27,9 @@ Update it during the project when new settings or keys are added.
 - [ ] `public.admins` contains only Stina's user ID (the developer's ID removed).
 - [ ] RLS tested again as a logged-out visitor.
 - [ ] Test data (paintings and orders) removed.
+- [ ] Vault secrets `project_url` and `publishable_key` (used by the `release-expired-reservations` pg_cron job)
+      point to the live project and its publishable key. Created by hand in the SQL Editor, not in a migration.
+- [ ] pg_cron jobs exist in the live project and run without errors (`select * from cron.job_run_details`).
 
 ## Legal
 - [ ] Terms of purchase, right of withdrawal and privacy policy approved by Stina (based on Konsumentverket's checklists).

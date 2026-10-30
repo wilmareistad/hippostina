@@ -1,8 +1,21 @@
-import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Painting, PaintingStatus } from '../../core/painting';
+import { OrderService } from '../../core/order.service';
 import { PaintingService } from '../../core/painting.service';
 import { formatPrice } from '../../core/price';
+import { formatReservationEnd } from '../../core/reservation';
+
+/** How often the reservation texts are recalculated. */
+const CLOCK_INTERVAL_MS = 30_000;
 
 /** status tabs and labels. */
 const STATUS_LABELS: Record<PaintingStatus, string> = {
@@ -21,12 +34,15 @@ const STATUS_LABELS: Record<PaintingStatus, string> = {
 })
 export class PaintingList {
   private readonly paintingService = inject(PaintingService);
+  private readonly orderService = inject(OrderService);
 
   protected readonly tabs = (Object.keys(STATUS_LABELS) as PaintingStatus[]).map((status) => ({
     status,
     label: STATUS_LABELS[status],
   }));
   protected readonly paintings = signal<Painting[]>([]);
+  /** Ids of paintings that have an order (sold online). Those cannot be put back on sale. */
+  protected readonly orderedPaintingIds = signal<ReadonlySet<string>>(new Set());
   protected readonly selectedStatus = signal<PaintingStatus>('available');
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
@@ -38,13 +54,28 @@ export class PaintingList {
   /** The native <dialog> element in the template (#deleteDialog). */
   private readonly deleteDialog = viewChild.required<ElementRef<HTMLDialogElement>>('deleteDialog');
 
+  /** The painting "sold elsewhere" confirmation is about, or null when it is closed. */
+  protected readonly paintingToMarkSold = signal<Painting | null>(null);
+  /** The native <dialog> element in the template (#markSoldDialog). */
+  private readonly markSoldDialog =
+    viewChild.required<ElementRef<HTMLDialogElement>>('markSoldDialog');
+
   /** Recalculated automatically when "paintings" or "selectedStatus" change. */
   protected readonly visiblePaintings = computed(() =>
     this.paintings().filter((painting) => painting.status === this.selectedStatus()),
   );
 
+  /** The current time as a signal, so "Reserverad till" turns into "Gick ut" without a reload. */
+  private readonly now = signal(new Date());
+
   constructor() {
     void this.load();
+    const timer = setInterval(() => this.now.set(new Date()), CLOCK_INTERVAL_MS);
+    inject(DestroyRef).onDestroy(() => clearInterval(timer));
+  }
+
+  protected reservationText(painting: Painting): string {
+    return formatReservationEnd(painting.reserved_until, this.now());
   }
 
   protected countFor(status: PaintingStatus): number {
@@ -74,6 +105,60 @@ export class PaintingList {
   /** Undo an archive: the painting becomes available again. */
   protected async restore(painting: Painting): Promise<void> {
     await this.runAction(painting, () => this.paintingService.restore(painting.id));
+  }
+
+  /** Undo is only for paintings marked as sold elsewhere, which have no order. */
+  protected canUnsell(painting: Painting): boolean {
+    return painting.status === 'sold' && !this.orderedPaintingIds().has(painting.id);
+  }
+
+  /** The painting the "put back on sale" confirmation is about, or null when it is closed. */
+  protected readonly paintingToUnsell = signal<Painting | null>(null);
+  /** The native <dialog> element in the template (#unsellDialog). */
+  private readonly unsellDialog = viewChild.required<ElementRef<HTMLDialogElement>>('unsellDialog');
+
+  protected askUnsell(painting: Painting): void {
+    this.paintingToUnsell.set(painting);
+    this.unsellDialog().nativeElement.showModal();
+  }
+
+  protected cancelUnsell(): void {
+    this.unsellDialog().nativeElement.close();
+    this.paintingToUnsell.set(null);
+  }
+
+  protected async confirmUnsell(): Promise<void> {
+    const painting = this.paintingToUnsell();
+    this.cancelUnsell();
+    if (!painting) return;
+    await this.runAction(
+      painting,
+      () => this.paintingService.unsell(painting.id),
+      `Kunde inte lägga ut "${painting.title}" till försäljning igen. Har den sålts online går det inte. Listan har uppdaterats.`,
+    );
+  }
+
+  /** Ask first before marking a painting as sold elsewhere. */
+  protected askMarkSold(painting: Painting): void {
+    this.paintingToMarkSold.set(painting);
+    this.markSoldDialog().nativeElement.showModal();
+  }
+
+  protected cancelMarkSold(): void {
+    this.markSoldDialog().nativeElement.close();
+    this.paintingToMarkSold.set(null);
+  }
+
+  /** If the admin confirmed, only available or archived paintings can be marked as sold. */
+  protected async confirmMarkSold(): Promise<void> {
+    const painting = this.paintingToMarkSold();
+    this.cancelMarkSold();
+    if (!painting) return;
+    await this.runAction(
+      painting,
+      () => this.paintingService.markSold(painting.id),
+      `Kunde inte markera "${painting.title}" som såld. Kanske hann en kund reservera den. Listan har uppdaterats.`,
+    );
   }
 
   /** Step 1 of a permanent delete: ask first, because it cannot be undone. */
@@ -121,7 +206,12 @@ export class PaintingList {
 
   private async load(): Promise<void> {
     try {
-      this.paintings.set(await this.paintingService.list());
+      const [paintings, orderedIds] = await Promise.all([
+        this.paintingService.list(),
+        this.orderService.listPaintingIds(),
+      ]);
+      this.paintings.set(paintings);
+      this.orderedPaintingIds.set(orderedIds);
     } catch (error) {
       console.error(error);
       this.error.set('Kunde inte hämta tavlorna. Försök igen.');
