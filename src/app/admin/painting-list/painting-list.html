@@ -40,6 +40,9 @@
             @if (size(painting); as size) {
               <span>{{ size }}</span>
             }
+            @if (painting.status === 'reserved') {
+              <span>{{ reservationText(painting) }}</span>
+            }
           </div>
           <div class="actions">
             <a [routerLink]="['/admin/paintings', painting.id]">Redigera</a>
