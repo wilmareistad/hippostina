@@ -1,9 +1,21 @@
-import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Painting, PaintingStatus } from '../../core/painting';
 import { OrderService } from '../../core/order.service';
 import { PaintingService } from '../../core/painting.service';
 import { formatPrice } from '../../core/price';
+import { formatReservationEnd } from '../../core/reservation';
+
+/** How often the reservation texts are recalculated. */
+const CLOCK_INTERVAL_MS = 30_000;
 
 /** status tabs and labels. */
 const STATUS_LABELS: Record<PaintingStatus, string> = {
@@ -53,8 +65,17 @@ export class PaintingList {
     this.paintings().filter((painting) => painting.status === this.selectedStatus()),
   );
 
+  /** The current time as a signal, so "Reserverad till" turns into "Gick ut" without a reload. */
+  private readonly now = signal(new Date());
+
   constructor() {
     void this.load();
+    const timer = setInterval(() => this.now.set(new Date()), CLOCK_INTERVAL_MS);
+    inject(DestroyRef).onDestroy(() => clearInterval(timer));
+  }
+
+  protected reservationText(painting: Painting): string {
+    return formatReservationEnd(painting.reserved_until, this.now());
   }
 
   protected countFor(status: PaintingStatus): number {
