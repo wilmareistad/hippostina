@@ -5,7 +5,7 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { withSupabase } from "@supabase/server";
 import Stripe from "stripe";
-import { buildCustomerConfirmation } from "../_shared/order-emails.ts";
+import { buildAdminNotification, buildCustomerConfirmation } from "../_shared/order-emails.ts";
 import { sendEmail } from "../_shared/send-email.ts";
 
 // Set with `supabase secrets set`. Never sent to the browser.
@@ -13,6 +13,8 @@ const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
 // The endpoint's signing secret (whsec_...). From `stripe listen` while testing, from the
 // webhook endpoint in the Stripe Dashboard when it is set up there.
 const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
+// Where the order notification goes. A missing address only stops that email.
+const adminEmail = Deno.env.get("ADMIN_EMAIL");
 
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
 // Deno has no Node crypto module, so the signature is checked with the Web Crypto API.
@@ -21,6 +23,11 @@ const cryptoProvider = Stripe.createSubtleCryptoProvider();
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 // Same list as in create-checkout.
 const DELIVERY_METHODS = ["pickup"];
+
+// Only the order id and the error, so no customer data ends up in the logs.
+function logEmailError(label: string, orderId: string, error: unknown): void {
+  console.error(label, orderId, error instanceof Error ? error.message : error);
+}
 
 export default {
   // cors: false because only Stripe's servers call this, never a browser.
@@ -109,7 +116,7 @@ export default {
       }
 
       // Only for a new order, so a repeated event sends nothing. Before the painting is updated:
-      // a retry after a failed update finds the order saved and would not send the email. A failed
+      // a retry after a failed update finds the order saved and would not send the emails. A failed
       // email is only logged, since the customer has paid and the order is saved.
       if (newOrder) {
         try {
@@ -123,15 +130,24 @@ export default {
             throw new Error(`Could not read painting: ${paintingError.message}`);
           }
 
-          await sendEmail(
-            buildCustomerConfirmation({ ...newOrder, painting_title: painting.title }),
-          );
+          const order = { ...newOrder, painting_title: painting.title };
+
+          // allSettled: sent at the same time, and one failing does not stop the other.
+          const [customerResult, adminResult] = await Promise.allSettled([
+            sendEmail(buildCustomerConfirmation(order)),
+            adminEmail
+              ? sendEmail(buildAdminNotification(order, adminEmail))
+              : Promise.reject(new Error("ADMIN_EMAIL is not set")),
+          ]);
+
+          if (customerResult.status === "rejected") {
+            logEmailError("Customer email error:", newOrder.id, customerResult.reason);
+          }
+          if (adminResult.status === "rejected") {
+            logEmailError("Admin email error:", newOrder.id, adminResult.reason);
+          }
         } catch (error) {
-          console.error(
-            "Customer email error:",
-            newOrder.id,
-            error instanceof Error ? error.message : error,
-          );
+          logEmailError("Order email error:", newOrder.id, error);
         }
       }
 
