@@ -14,9 +14,10 @@
       }
     }
   </p>
+  <!-- No link while cancelling: the gallery would load before the painting is released. -->
   @if (state() === 'released' && paintingId(); as id) {
     <a class="button" [routerLink]="['/malningar', id]">TILLBAKA TILL TAVLAN</a>
-  } @else {
+  } @else if (state() !== 'cancelling') {
     <a class="button" routerLink="/malningar">TILLBAKA TILL SHOPPEN</a>
   }
 </section>
