@@ -18,8 +18,9 @@ Update it during the project when new settings or keys are added.
 
 ## Email (Resend)
 - [ ] Domain verified in Resend (SPF/DKIM DNS records).
-- [ ] Sender address changed from the test sender to the real domain.
-- [ ] Admin notification email set to Stina's address.
+- [ ] Sender address changed from the test sender to the real domain (Supabase secret `EMAIL_FROM`).
+- [ ] Admin notification email set to Stina's address (Supabase secret `ADMIN_EMAIL`).
+- [ ] Resend API key belongs to the account with the verified domain (Supabase secret `RESEND_API_KEY`).
 
 ## Supabase
 - [ ] Decide if the free plan is enough (pausing, backups) or if Pro is needed.
