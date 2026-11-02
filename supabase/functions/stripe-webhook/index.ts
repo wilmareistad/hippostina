@@ -5,6 +5,8 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { withSupabase } from "@supabase/server";
 import Stripe from "stripe";
+import { buildCustomerConfirmation } from "../_shared/order-emails.ts";
+import { sendEmail } from "../_shared/send-email.ts";
 
 // Set with `supabase secrets set`. Never sent to the browser.
 const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
@@ -82,8 +84,9 @@ export default {
       }
 
       // Save the order first: the customer has paid, so the order must exist whatever happens to
-      // the painting. ignoreDuplicates (on conflict do nothing) makes a repeated event harmless.
-      const { error: orderError } = await ctx.supabaseAdmin
+      // the painting. ignoreDuplicates (on conflict do nothing) makes a repeated event harmless,
+      // and select then only returns a row if this event created it.
+      const { data: newOrder, error: orderError } = await ctx.supabaseAdmin
         .from("orders")
         .upsert(
           {
@@ -95,12 +98,41 @@ export default {
             delivery_method: delivery,
           },
           { onConflict: "stripe_session_id", ignoreDuplicates: true },
-        );
+        )
+        .select("id, created_at, customer_email, customer_name, amount_ore, delivery_method")
+        .maybeSingle();
 
       if (orderError) {
         // 500 makes Stripe send the event again later.
         console.error("Order error:", orderError);
         return Response.json({ error: "Could not save order" }, { status: 500 });
+      }
+
+      // Only for a new order, so a repeated event sends nothing. Before the painting is updated:
+      // a retry after a failed update finds the order saved and would not send the email. A failed
+      // email is only logged, since the customer has paid and the order is saved.
+      if (newOrder) {
+        try {
+          const { data: painting, error: paintingError } = await ctx.supabaseAdmin
+            .from("paintings")
+            .select("title")
+            .eq("id", paintingId)
+            .single();
+
+          if (paintingError) {
+            throw new Error(`Could not read painting: ${paintingError.message}`);
+          }
+
+          await sendEmail(
+            buildCustomerConfirmation({ ...newOrder, painting_title: painting.title }),
+          );
+        } catch (error) {
+          console.error(
+            "Customer email error:",
+            newOrder.id,
+            error instanceof Error ? error.message : error,
+          );
+        }
       }
 
       // Only the painting reserved for this session. "sold" is included so a repeated event
