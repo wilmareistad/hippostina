@@ -18,8 +18,9 @@ Update it during the project when new settings or keys are added.
 
 ## Email (Resend)
 - [ ] Domain verified in Resend (SPF/DKIM DNS records).
-- [ ] Sender address changed from the test sender to the real domain.
-- [ ] Admin notification email set to Stina's address.
+- [ ] Sender address changed from the test sender to the real domain (Supabase secret `EMAIL_FROM`).
+- [ ] Admin notification email set to Stina's address (Supabase secret `ADMIN_EMAIL`).
+- [ ] Resend API key belongs to the account with the verified domain (Supabase secret `RESEND_API_KEY`).
 
 ## Supabase
 - [ ] Decide if the free plan is enough (pausing, backups) or if Pro is needed.
@@ -34,6 +35,8 @@ Update it during the project when new settings or keys are added.
 ## Legal
 - [ ] Terms of purchase, right of withdrawal and privacy policy approved by Stina (based on Konsumentverket's checklists).
 - [ ] Company information (name, org.nr, address, contact) shown on the site.
+- [ ] Seller details in the order emails replaced with the real ones (`SELLER` in `supabase/functions/_shared/order-emails.ts`).
+- [ ] Receipt content, including VAT, checked against Skatteverket and with Stina.
 
 ## Final test
 - [ ] One real purchase with a small amount, then a refund.
