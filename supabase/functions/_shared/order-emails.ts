@@ -53,6 +53,24 @@ function escapeHtml(value: string): string {
     .replaceAll("'", "&#39;");
 }
 
+// Every value is escaped here, so an email cannot forget it.
+function buildDetailsTable(details: string[][]): string {
+  const rows = details
+    .map(
+      ([label, value]) =>
+        `<tr><td style="padding:4px 16px 4px 0"><strong>${label}</strong></td><td>${
+          escapeHtml(value)
+        }</td></tr>`,
+    )
+    .join("");
+
+  return `<table>${rows}</table>`;
+}
+
+function formatDelivery(deliveryMethod: string): string {
+  return DELIVERY_LABELS[deliveryMethod] ?? deliveryMethod;
+}
+
 export function buildCustomerConfirmation(order: OrderEmailData): Email {
   const greeting = order.customer_name
     ? `Tack för ditt köp, ${order.customer_name}!`
@@ -64,24 +82,15 @@ export function buildCustomerConfirmation(order: OrderEmailData): Email {
     ["Ordernummer", formatOrderNumber(order.id)],
     ["Datum", formatDate(order.created_at)],
     ["Målning", order.painting_title],
-    ["Leverans", DELIVERY_LABELS[order.delivery_method] ?? order.delivery_method],
+    ["Leverans", formatDelivery(order.delivery_method)],
     ["Totalt", formatPrice(order.amount_ore)],
   ];
-
-  const rows = details
-    .map(
-      ([label, value]) =>
-        `<tr><td style="padding:4px 16px 4px 0"><strong>${label}</strong></td><td>${
-          escapeHtml(value)
-        }</td></tr>`,
-    )
-    .join("");
 
   return {
     to: order.customer_email,
     subject: "Orderbekräftelse från Hippostina",
     html: `<h1>${escapeHtml(greeting)}</h1>
-<table>${rows}</table>
+${buildDetailsTable(details)}
 <p>${pickupInfo}</p>
 <p>${escapeHtml(seller)}</p>`,
     text: [
@@ -92,6 +101,36 @@ export function buildCustomerConfirmation(order: OrderEmailData): Email {
       pickupInfo,
       "",
       seller,
+    ].join("\n"),
+  };
+}
+
+export function buildAdminNotification(order: OrderEmailData, adminEmail: string): Email {
+  const heading = "En målning har sålts!";
+  const pickupInfo = "Kontakta kunden för att bestämma tid och plats för hämtning.";
+
+  const details = [
+    ["Ordernummer", formatOrderNumber(order.id)],
+    ["Datum", formatDate(order.created_at)],
+    ["Målning", order.painting_title],
+    ["Kund", order.customer_name ?? "Ej angivet"],
+    ["E-post", order.customer_email],
+    ["Leverans", formatDelivery(order.delivery_method)],
+    ["Totalt", formatPrice(order.amount_ore)],
+  ];
+
+  return {
+    to: adminEmail,
+    subject: `Ny order: ${order.painting_title}`,
+    html: `<h1>${heading}</h1>
+${buildDetailsTable(details)}
+<p>${pickupInfo}</p>`,
+    text: [
+      heading,
+      "",
+      ...details.map(([label, value]) => `${label}: ${value}`),
+      "",
+      pickupInfo,
     ].join("\n"),
   };
 }
