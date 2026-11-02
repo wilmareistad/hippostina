@@ -46,6 +46,24 @@ describe('PurchaseCancelled', () => {
     expect(root.querySelector('a')?.getAttribute('href')).toBe(`/malningar/${PAINTING_ID}`);
   });
 
+  it('shows no link until cancelPending() has answered', async () => {
+    let answer!: (ok: boolean) => void;
+    cancelPending.mockReturnValue(new Promise<boolean>((resolve) => (answer = resolve)));
+
+    const fixture = TestBed.createComponent(PurchaseCancelled);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+
+    expect(root.querySelector('p')?.textContent).toContain('Vi avbryter köpet');
+    expect(root.querySelector('a')).toBeNull();
+
+    answer(true);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(root.querySelector('a')?.getAttribute('href')).toBe(`/malningar/${PAINTING_ID}`);
+  });
+
   it('says the painting is released later and links to the gallery when cancelling fails', async () => {
     cancelPending.mockResolvedValue(false);
 
