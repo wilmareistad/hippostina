@@ -35,6 +35,8 @@ Update it during the project when new settings or keys are added.
 ## Legal
 - [ ] Terms of purchase, right of withdrawal and privacy policy approved by Stina (based on Konsumentverket's checklists).
 - [ ] Company information (name, org.nr, address, contact) shown on the site.
+- [ ] Seller details in the order emails replaced with the real ones (`SELLER` in `supabase/functions/_shared/order-emails.ts`).
+- [ ] Receipt content, including VAT, checked against Skatteverket and with Stina.
 
 ## Final test
 - [ ] One real purchase with a small amount, then a refund.
