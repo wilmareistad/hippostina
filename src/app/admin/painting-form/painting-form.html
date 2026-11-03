@@ -1,17 +1,21 @@
-<main class="painting-form">
-  <p><a routerLink="/admin">← Tillbaka</a></p>
-  <h1>{{ isEdit ? 'Redigera tavla' : 'Ny tavla' }}</h1>
+<div class="admin-page painting-form">
+  <a class="admin-back" routerLink="/admin">
+    <svg lucideArrowLeft aria-hidden="true"></svg>
+    Tillbaka
+  </a>
+  <p class="admin-eyebrow">Admin</p>
+  <h1 class="admin-title">{{ isEdit ? 'Redigera tavla' : 'Ny tavla' }}</h1>
 
   @if (loading()) {
-    <p>Hämtar tavla…</p>
+    <p class="admin-message">Hämtar tavla…</p>
   } @else if (loadError(); as message) {
-    <p class="error" role="alert">{{ message }}</p>
+    <p class="admin-error" role="alert">{{ message }}</p>
   } @else {
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form class="admin-form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <label for="title">Titel</label>
       <input id="title" type="text" formControlName="title" />
       @if (form.controls.title.touched && form.controls.title.invalid) {
-        <p class="error" role="alert">Titel måste fyllas i.</p>
+        <p class="admin-error" role="alert">Titel måste fyllas i.</p>
       }
 
       <label for="description">Beskrivning (valfri)</label>
@@ -23,19 +27,19 @@
         <p>Priset kan inte ändras när tavlan är reserverad eller såld.</p>
       }
       @if (form.controls.price.touched && form.controls.price.invalid) {
-        <p class="error" role="alert">Ange ett pris på minst 1 kr.</p>
+        <p class="admin-error" role="alert">Ange ett pris på minst 1 kr.</p>
       }
 
       <label for="width">Bredd (cm, valfri)</label>
       <input id="width" type="number" min="1" step="1" formControlName="width" />
       @if (form.controls.width.touched && form.controls.width.invalid) {
-        <p class="error" role="alert">Ange ett heltal över 0, eller lämna tomt.</p>
+        <p class="admin-error" role="alert">Ange ett heltal över 0, eller lämna tomt.</p>
       }
 
       <label for="height">Höjd (cm, valfri)</label>
       <input id="height" type="number" min="1" step="1" formControlName="height" />
       @if (form.controls.height.touched && form.controls.height.invalid) {
-        <p class="error" role="alert">Ange ett heltal över 0, eller lämna tomt.</p>
+        <p class="admin-error" role="alert">Ange ett heltal över 0, eller lämna tomt.</p>
       }
 
       <label for="image">Bild (JPG, PNG eller WebP, högst 10 MB)</label>
@@ -51,25 +55,27 @@
         (change)="onFileSelected($event)"
       />
       @if (fileError(); as message) {
-        <p class="error" role="alert">{{ message }}</p>
+        <p class="admin-error" role="alert">{{ message }}</p>
       }
 
       @if (saveError(); as message) {
-        <p class="error" role="alert">{{ message }}</p>
+        <p class="admin-error" role="alert">{{ message }}</p>
       }
 
-      <button type="submit" [disabled]="saving()">
+      <button class="admin-button" type="submit" [disabled]="saving()">
         {{ saving() ? 'Sparar…' : 'Spara' }}
       </button>
     </form>
   }
-</main>
+</div>
 
 <!-- showModal() opens it on top of the page, Esc closes it (same as "Lägg till bild"). -->
-<dialog #noImageDialog>
+<dialog class="admin-dialog" #noImageDialog>
   <p>Du försöker {{ isEdit ? 'spara' : 'skapa' }} en tavla utan bild.</p>
-  <button type="button" (click)="addImage()">Lägg till bild</button>
-  <button type="button" (click)="saveWithoutImage()">
-    {{ isEdit ? 'Spara' : 'Skapa tavla' }} utan bild
-  </button>
+  <div class="admin-dialog-actions">
+    <button class="admin-button admin-button-secondary" type="button" (click)="saveWithoutImage()">
+      {{ isEdit ? 'Spara' : 'Skapa tavla' }} utan bild
+    </button>
+    <button class="admin-button" type="button" (click)="addImage()">Lägg till bild</button>
+  </div>
 </dialog>

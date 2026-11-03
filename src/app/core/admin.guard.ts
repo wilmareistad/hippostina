@@ -7,5 +7,5 @@ export const adminGuard: CanActivateFn = async () => {
   // inject() must be called before the first await.
   const auth = inject(AuthService);
   const router = inject(Router);
-  return (await auth.isAdmin()) ? true : router.createUrlTree(['/admin/login']);
+  return (await auth.isAdmin()) ? true : router.createUrlTree(['/admin/logga-in']);
 };

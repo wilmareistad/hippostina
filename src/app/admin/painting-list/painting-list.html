@@ -1,7 +1,4 @@
-<section>
-  <h2>Tavlor</h2>
-  <p><a routerLink="/admin/paintings/new">Ny tavla</a></p>
-
+<section aria-label="Tavlor">
   <div class="tabs" role="group" aria-label="Filtrera på status">
     @for (tab of tabs; track tab.status) {
       <button
@@ -16,15 +13,15 @@
   </div>
 
   @if (actionError(); as message) {
-    <p class="error" role="alert">{{ message }}</p>
+    <p class="admin-error" role="alert">{{ message }}</p>
   }
 
   @if (loading()) {
-    <p>Hämtar tavlor…</p>
+    <p class="admin-message">Hämtar tavlor…</p>
   } @else if (error(); as message) {
-    <p class="error" role="alert">{{ message }}</p>
+    <p class="admin-error" role="alert">{{ message }}</p>
   } @else if (visiblePaintings().length === 0) {
-    <p>Inga tavlor här.</p>
+    <p class="admin-message">Inga tavlor här.</p>
   } @else {
     <ul class="paintings">
       @for (painting of visiblePaintings(); track painting.id) {
@@ -45,26 +42,68 @@
             }
           </div>
           <div class="actions">
-            <a [routerLink]="['/admin/paintings', painting.id]">Redigera</a>
+            <a
+              class="admin-button admin-button-secondary"
+              [routerLink]="['/admin/tavlor', painting.id]"
+            >
+              <svg lucidePencil aria-hidden="true"></svg>
+              Redigera
+            </a>
             @if (painting.status === 'available') {
-              <button type="button" (click)="archive(painting)" [disabled]="busyId() !== null">
+              <button
+                class="admin-button admin-button-secondary"
+                type="button"
+                (click)="archive(painting)"
+                [disabled]="busyId() !== null"
+              >
+                <svg lucideArchive aria-hidden="true"></svg>
                 Arkivera
               </button>
-              <button type="button" (click)="askMarkSold(painting)" [disabled]="busyId() !== null">
+              <button
+                class="admin-button admin-button-secondary"
+                type="button"
+                (click)="askMarkSold(painting)"
+                [disabled]="busyId() !== null"
+              >
+                <svg lucideBadgeCheck aria-hidden="true"></svg>
                 Markera som såld
               </button>
             } @else if (painting.status === 'archived') {
-              <button type="button" (click)="restore(painting)" [disabled]="busyId() !== null">
+              <button
+                class="admin-button admin-button-secondary"
+                type="button"
+                (click)="restore(painting)"
+                [disabled]="busyId() !== null"
+              >
+                <svg lucideArchiveRestore aria-hidden="true"></svg>
                 Återställ
               </button>
-              <button type="button" (click)="askMarkSold(painting)" [disabled]="busyId() !== null">
+              <button
+                class="admin-button admin-button-secondary"
+                type="button"
+                (click)="askMarkSold(painting)"
+                [disabled]="busyId() !== null"
+              >
+                <svg lucideBadgeCheck aria-hidden="true"></svg>
                 Markera som såld
               </button>
-              <button type="button" (click)="askDelete(painting)" [disabled]="busyId() !== null">
+              <button
+                class="admin-button admin-button-danger"
+                type="button"
+                (click)="askDelete(painting)"
+                [disabled]="busyId() !== null"
+              >
+                <svg lucideTrash aria-hidden="true"></svg>
                 Radera permanent
               </button>
             } @else if (canUnsell(painting)) {
-              <button type="button" (click)="askUnsell(painting)" [disabled]="busyId() !== null">
+              <button
+                class="admin-button admin-button-secondary"
+                type="button"
+                (click)="askUnsell(painting)"
+                [disabled]="busyId() !== null"
+              >
+                <svg lucideUndo2 aria-hidden="true"></svg>
                 Ångra såld
               </button>
             }
@@ -75,24 +114,41 @@
   }
 </section>
 
-<dialog #markSoldDialog (close)="paintingToMarkSold.set(null)">
+<dialog class="admin-dialog" #markSoldDialog (close)="paintingToMarkSold.set(null)">
   <p>Markera "{{ paintingToMarkSold()?.title }}" som såld på annat håll?</p>
   <p>Tavlan försvinner från shopen och kan inte längre köpas online.</p>
-  <button type="button" (click)="cancelMarkSold()">Avbryt</button>
-  <button type="button" (click)="confirmMarkSold()">Markera som såld</button>
+  <div class="admin-dialog-actions">
+    <button class="admin-button admin-button-secondary" type="button" (click)="cancelMarkSold()">
+      Avbryt
+    </button>
+    <button class="admin-button" type="button" (click)="confirmMarkSold()">Markera som såld</button>
+  </div>
 </dialog>
 
-<dialog #unsellDialog (close)="paintingToUnsell.set(null)">
+<dialog class="admin-dialog" #unsellDialog (close)="paintingToUnsell.set(null)">
   <p>Lägga ut "{{ paintingToUnsell()?.title }}" till försäljning igen?</p>
   <p>Tavlan blir tillgänglig för köp i shopen direkt.</p>
-  <button type="button" (click)="cancelUnsell()">Avbryt</button>
-  <button type="button" (click)="confirmUnsell()">Lägg ut till försäljning</button>
+  <div class="admin-dialog-actions">
+    <button class="admin-button admin-button-secondary" type="button" (click)="cancelUnsell()">
+      Avbryt
+    </button>
+    <button class="admin-button" type="button" (click)="confirmUnsell()">
+      Lägg ut till försäljning
+    </button>
+  </div>
 </dialog>
 
 <!-- showModal() opens it on top of the page, Esc closes it. -->
-<dialog #deleteDialog (close)="paintingToDelete.set(null)">
+<dialog class="admin-dialog" #deleteDialog (close)="paintingToDelete.set(null)">
   <p>Radera "{{ paintingToDelete()?.title }}" permanent?</p>
   <p>Det går inte att ångra. Tavlor som har en order kan inte raderas.</p>
-  <button type="button" (click)="cancelDelete()">Avbryt</button>
-  <button type="button" (click)="confirmDelete()">Radera permanent</button>
+  <div class="admin-dialog-actions">
+    <button class="admin-button admin-button-secondary" type="button" (click)="cancelDelete()">
+      Avbryt
+    </button>
+    <button class="admin-button admin-button-danger" type="button" (click)="confirmDelete()">
+      <svg lucideTrash aria-hidden="true"></svg>
+      Radera permanent
+    </button>
+  </div>
 </dialog>

@@ -8,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { LucideArrowLeft } from '@lucide/angular';
 import { Painting, PaintingInput } from '../../core/painting';
 import { PaintingService } from '../../core/painting.service';
 import { kronorToOre, oreToKronor } from '../../core/price';
@@ -20,7 +21,7 @@ function notBlank(control: AbstractControl<string>): ValidationErrors | null {
 /** Admin form for creating a painting or editing one  */
 @Component({
   selector: 'app-painting-form',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, LucideArrowLeft],
   templateUrl: './painting-form.html',
   styleUrl: './painting-form.scss',
 })
@@ -28,7 +29,7 @@ export class PaintingForm {
   private readonly paintingService = inject(PaintingService);
   private readonly router = inject(Router);
 
-  /** The :id in the URL. Null on /admin/paintings/new. */
+  /** The :id in the URL. Null on /admin/tavlor/ny. */
   private readonly id = inject(ActivatedRoute).snapshot.paramMap.get('id');
   protected readonly isEdit = this.id !== null;
 
@@ -49,7 +50,8 @@ export class PaintingForm {
   protected readonly selectedFile = signal<File | null>(null);
   protected readonly fileError = signal<string | null>(null);
   /** The native <dialog> elements in the template (#noImageDialog, #imageInput). */
-  private readonly noImageDialog = viewChild.required<ElementRef<HTMLDialogElement>>('noImageDialog');
+  private readonly noImageDialog =
+    viewChild.required<ElementRef<HTMLDialogElement>>('noImageDialog');
   private readonly imageInput = viewChild<ElementRef<HTMLInputElement>>('imageInput');
   protected readonly saving = signal(false);
   protected readonly saveError = signal<string | null>(null);

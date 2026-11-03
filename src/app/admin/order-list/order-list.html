@@ -1,0 +1,61 @@
+<div class="admin-page">
+  <div class="admin-page-head">
+    <div>
+      <p class="admin-eyebrow">Admin</p>
+      <h1 class="admin-title">Ordrar</h1>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <p class="admin-message">Hämtar ordrar…</p>
+  } @else if (error(); as message) {
+    <p class="admin-error" role="alert">{{ message }}</p>
+  } @else if (orders().length === 0) {
+    <p class="admin-message">Inga ordrar än.</p>
+  } @else {
+    @if (ordersWithWarnings() > 0) {
+      <p class="summary">
+        <svg lucideTriangleAlert aria-hidden="true"></svg>
+        {{ ordersWithWarnings() }}
+        {{ ordersWithWarnings() === 1 ? 'order saknar' : 'ordrar saknar' }} bekräftat mejl
+      </p>
+    }
+
+    <!-- Scrolls sideways on narrow screens. tabindex lets keyboard users scroll it too. -->
+    <div class="table-wrapper" role="region" aria-label="Ordrar" tabindex="0">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Ordernummer</th>
+            <th scope="col">Datum</th>
+            <th scope="col">Målning</th>
+            <th scope="col">Kund</th>
+            <th scope="col">Belopp</th>
+            <th scope="col">Leverans</th>
+            <th scope="col">Mejl</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of orders(); track order.id) {
+            <tr>
+              <td class="no-wrap">{{ formatOrderNumber(order.id) }}</td>
+              <td class="no-wrap">{{ formatOrderDate(order.created_at) }}</td>
+              <td>{{ order.painting.title }}</td>
+              <td>
+                <div>{{ order.customer_name ?? 'Ej angivet' }}</div>
+                <div class="email">{{ order.customer_email }}</div>
+              </td>
+              <td class="no-wrap">{{ formatPrice(order.amount_ore) }}</td>
+              <td class="no-wrap">{{ formatDelivery(order.delivery_method) }}</td>
+              <td>
+                @for (warning of missingEmailWarnings(order); track warning) {
+                  <div class="warning">{{ warning }}</div>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

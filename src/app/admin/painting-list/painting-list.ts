@@ -8,6 +8,14 @@ import {
   viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import {
+  LucideArchive,
+  LucideArchiveRestore,
+  LucideBadgeCheck,
+  LucidePencil,
+  LucideTrash,
+  LucideUndo2,
+} from '@lucide/angular';
 import { Painting, PaintingStatus } from '../../core/painting';
 import { OrderService } from '../../core/order.service';
 import { PaintingService } from '../../core/painting.service';
@@ -28,7 +36,15 @@ const STATUS_LABELS: Record<PaintingStatus, string> = {
 /** Admin list of all paintings with a tab per status, so sold ones are out of the way. */
 @Component({
   selector: 'app-painting-list',
-  imports: [RouterLink],
+  imports: [
+    RouterLink,
+    LucideArchive,
+    LucideArchiveRestore,
+    LucideBadgeCheck,
+    LucidePencil,
+    LucideTrash,
+    LucideUndo2,
+  ],
   templateUrl: './painting-list.html',
   styleUrl: './painting-list.scss',
 })

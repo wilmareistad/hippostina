@@ -1,0 +1,41 @@
+<header class="header">
+  <a class="brand" routerLink="/">
+    <span class="brand-name">HIPPOSTINA</span>
+    <span class="brand-tagline">KONST AV STINA</span>
+  </a>
+
+  <button
+    class="menu-button"
+    type="button"
+    [attr.aria-expanded]="menuOpen()"
+    aria-controls="admin-nav"
+    [attr.aria-label]="menuOpen() ? 'Stäng menyn' : 'Öppna menyn'"
+    (click)="toggleMenu()"
+  >
+    @if (menuOpen()) {
+      <svg lucideX aria-hidden="true"></svg>
+    } @else {
+      <svg lucideMenu aria-hidden="true"></svg>
+    }
+  </button>
+
+  <nav id="admin-nav" class="nav" [class.open]="menuOpen()" aria-label="Adminmeny">
+    <!-- exact: true, otherwise "/admin" would count as active on the order page too. -->
+    <a
+      routerLink="/admin"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="closeMenu()"
+      >Admin start</a
+    >
+    <a routerLink="/admin/ordrar" routerLinkActive="active" (click)="closeMenu()">Ordrar</a>
+    <button type="button" (click)="signOut()">
+      <svg lucideLogOut aria-hidden="true"></svg>
+      Logga ut
+    </button>
+  </nav>
+</header>
+
+<main class="content">
+  <router-outlet />
+</main>
