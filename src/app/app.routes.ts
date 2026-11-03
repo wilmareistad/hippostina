@@ -39,28 +39,41 @@ export const routes: Routes = [
             (m) => m.PurchaseCancelled,
           ),
       },
+      // In the shop's layout, since the visitor is not logged in yet.
+      {
+        path: 'admin/logga-in',
+        loadComponent: () => import('./admin/login/login').then((m) => m.Login),
+      },
     ],
   },
   // loadComponent: the admin code is only downloaded when someone opens these pages.
   {
-    path: 'admin/login',
-    loadComponent: () => import('./admin/login/login').then((m) => m.Login),
-  },
-  {
     path: 'admin',
-    canActivate: [adminGuard],
-    loadComponent: () => import('./admin/dashboard/dashboard').then((m) => m.Dashboard),
-  },
-  // 'new' is listed before ':id', otherwise ':id' would match the word "new".
-  {
-    path: 'admin/paintings/new',
-    canActivate: [adminGuard],
-    loadComponent: () => import('./admin/painting-form/painting-form').then((m) => m.PaintingForm),
-  },
-  {
-    path: 'admin/paintings/:id',
-    canActivate: [adminGuard],
-    loadComponent: () => import('./admin/painting-form/painting-form').then((m) => m.PaintingForm),
+    // canActivateChild: checked on every move between the pages below, not only the first one.
+    canActivateChild: [adminGuard],
+    loadComponent: () => import('./admin/admin-layout/admin-layout').then((m) => m.AdminLayout),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () => import('./admin/dashboard/dashboard').then((m) => m.Dashboard),
+      },
+      {
+        path: 'ordrar',
+        loadComponent: () => import('./admin/order-list/order-list').then((m) => m.OrderList),
+      },
+      // 'ny' is listed before ':id', otherwise ':id' would match the word "ny".
+      {
+        path: 'tavlor/ny',
+        loadComponent: () =>
+          import('./admin/painting-form/painting-form').then((m) => m.PaintingForm),
+      },
+      {
+        path: 'tavlor/:id',
+        loadComponent: () =>
+          import('./admin/painting-form/painting-form').then((m) => m.PaintingForm),
+      },
+    ],
   },
   // '**' matches every path that no route above matched, for example an old or misspelled link.
   // It must be last, because the router uses the first route that matches.

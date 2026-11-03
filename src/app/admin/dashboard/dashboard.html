@@ -1,7 +1,15 @@
-<main>
-  <h1>Admin</h1>
-  <p>Inloggad som {{ auth.user()?.email }}</p>
-  <button type="button" (click)="signOut()">Logga ut</button>
+<div class="admin-page">
+  <div class="admin-page-head">
+    <div>
+      <p class="admin-eyebrow">Admin</p>
+      <h1 class="admin-title">Tavlor</h1>
+      <p class="admin-lead">Inloggad som {{ auth.user()?.email }}</p>
+    </div>
+    <a class="admin-button" routerLink="/admin/tavlor/ny">
+      <svg lucidePlus aria-hidden="true"></svg>
+      Ny tavla
+    </a>
+  </div>
 
   <app-painting-list />
-</main>
+</div>
