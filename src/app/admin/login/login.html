@@ -1,24 +1,32 @@
-<main class="login">
-  <h1>Admin login</h1>
+<div class="login">
+  <a class="admin-back" routerLink="/">
+    <svg lucideArrowLeft aria-hidden="true"></svg>
+    Tillbaka till hemsidan
+  </a>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <label for="email">Email</label>
-    <input id="email" type="email" formControlName="email" autocomplete="username" />
+  <div class="panel">
+    <p class="admin-eyebrow">Admin</p>
+    <h1 class="admin-title">Logga in</h1>
 
-    <label for="password">Password</label>
-    <input
-      id="password"
-      type="password"
-      formControlName="password"
-      autocomplete="current-password"
-    />
+    <form class="admin-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label for="email">E-post</label>
+      <input id="email" type="email" formControlName="email" autocomplete="username" />
 
-    @if (error()) {
-      <p class="error" role="alert">{{ error() }}</p>
-    }
+      <label for="password">Lösenord</label>
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        autocomplete="current-password"
+      />
 
-    <button type="submit" [disabled]="loading()">
-      {{ loading() ? 'Logging in…' : 'Log in' }}
-    </button>
-  </form>
-</main>
+      @if (error()) {
+        <p class="admin-error" role="alert">{{ error() }}</p>
+      }
+
+      <button class="admin-button" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Loggar in…' : 'Logga in' }}
+      </button>
+    </form>
+  </div>
+</div>

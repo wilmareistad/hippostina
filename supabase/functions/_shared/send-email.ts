@@ -15,7 +15,9 @@ export type Email = {
 };
 
 // Throws if the email could not be sent, so the caller decides what a failure means.
-export async function sendEmail(email: Email): Promise<void> {
+// With an idempotency key, Resend sends only once per key for 24 hours. A repeated request must
+// have the same content, and one made while the first is still running gets a 409, which throws.
+export async function sendEmail(email: Email, idempotencyKey?: string): Promise<void> {
   // Set with `supabase secrets set`. Never sent to the browser.
   const apiKey = Deno.env.get("RESEND_API_KEY");
   const from = Deno.env.get("EMAIL_FROM");
@@ -28,6 +30,7 @@ export async function sendEmail(email: Email): Promise<void> {
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
+      ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
     },
     body: JSON.stringify({ from, ...email }),
     signal: AbortSignal.timeout(TIMEOUT_MS),

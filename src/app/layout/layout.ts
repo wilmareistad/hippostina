@@ -3,7 +3,7 @@ import { Component, ElementRef, inject, signal, viewChild } from '@angular/core'
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { LucideMenu, LucideX } from '@lucide/angular';
 
-/** Public shell, header, page content and footer. Admin pages do not use it. */
+/** Public shell, header, page content and footer. Logged-in admin pages use AdminLayout. */
 @Component({
   selector: 'app-layout',
   imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideMenu, LucideX],

@@ -1,0 +1,12 @@
+// @use copies the shared header rules into this component's styles.
+@use '../../layout/site-header';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+}

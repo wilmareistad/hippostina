@@ -1,11 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { LucideArrowLeft } from '@lucide/angular';
 import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink, LucideArrowLeft],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -38,13 +39,13 @@ export class Login {
 
       if (!(await this.auth.isAdmin())) {
         await this.auth.signOut();
-        this.error.set('This account does not have admin access.');
+        this.error.set('Det här kontot har inte tillgång till admin.');
         return;
       }
       await this.router.navigateByUrl('/admin');
     } catch {
       // Same message for wrong email and wrong password, so we don't reveal which accounts exist.
-      this.error.set('Could not log in. Check your email and password.');
+      this.error.set('Kunde inte logga in. Kontrollera e-post och lösenord.');
     } finally {
       this.loading.set(false);
     }
