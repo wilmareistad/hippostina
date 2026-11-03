@@ -22,6 +22,30 @@ This does not affect safety: the reservation in the database decides who can buy
 **Other testing:** each part (create-checkout, cancel-checkout, the webhook and the pg_cron cleanup) was
 also tested on its own while it was built, and the Angular app has unit tests (50, `ng test`).
 
+## Order emails sent only once (#63)
+
+Tested 2026-11-03 on the deployed `stripe-webhook` function, Stripe test mode, with `stripe listen`.
+Retries were sent with `stripe events resend`. Failures were forced by changing `ADMIN_EMAIL` and
+`EMAIL_FROM` with `supabase secrets`. Result shows what was observed in the emails received.
+
+| # | Test case | Expected | Result |
+|---|---|---|---|
+| 1 | Normal purchase | Customer and admin email both arrive | Not recorded |
+| 2 | Repeated event after both emails were sent | No new email | Pass |
+| 3 | `customer_email_sent_at` and `admin_email_sent_at` cleared within 24 hours, event sent again | The Resend idempotency key stops a new email | Pass |
+| 4 | `ADMIN_EMAIL` not set during purchase | Only the customer email arrives | Pass |
+| 5 | Test 4's event sent again with `ADMIN_EMAIL` restored | Only the admin email arrives | Pass |
+| 6 | `EMAIL_FROM` not set during purchase | No email arrives | Pass |
+| 7 | Two resends of one event at the same time, after a purchase with `EMAIL_FROM` not set and the value restored | One customer email and one admin email, no duplicates | Pass |
+| 8 | `ADMIN_EMAIL` set to an address Resend refuses during purchase, restored, event sent again | Only the customer email arrives at first; the admin email arrives after the retry, so the refused send did not block the key | Pass |
+| 9 | Logged-out update of `orders` (REST API with the publishable key, all-zero id) | Refused (`401`, `42501`) | Pass |
+
+**Not tested:** what happens to the idempotency key after a `5xx` error from Resend, and Stripe's automatic
+retries. It was not recorded if test 7's two requests overlapped, so it does not prove the behavior when
+two events really run at the same time. The painting's status after a failed email was not recorded per test.
+
+**Note:** a changed secret may take a few minutes to reach the function, so wait before testing again.
+
 ## Admin order overview and admin layout (#64)
 
 Tested 2026-11-03 with `ng serve` on localhost against the Supabase project, logged in as the admin.
@@ -48,3 +72,17 @@ It is covered by a unit test.
 
 **Known limitations:** the title comes from `paintings`, so a renamed painting shows its new title in the
 overview. Orders from before #63 show the email warning, since their columns are empty.
+
+## Order emails and order overview on the deployed site (#67)
+
+To be run on the deployed site, Stripe test mode. A repeated event is already covered by test 2 in #63.
+
+| # | Test case | Expected | Result |
+|---|---|---|---|
+| 1 | Successful payment | Customer and admin email both arrive, with correct order number, date, painting, delivery and total; the admin email also has the customer's name and email | Not run |
+| 2 | Cancelled payment | No email | Not run |
+| 3 | Expired session (`stripe checkout sessions expire`) | No email | Not run |
+| 4 | Order overview after test 1 | The order is shown, with the same order number as in the emails | Not run |
+| 5 | Logged-out read of `orders` (REST API with the publishable key) | Refused, and no order data | Not run |
+| 6 | Logged-out upload to and delete from the painting image bucket | Both refused | Not run |
+| 7 | Shop and admin pages on mobile and desktop | Pages work and are readable; no sideways scrolling of the page | Not run |
