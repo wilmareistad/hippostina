@@ -39,6 +39,17 @@ Update it during the project when new settings or keys are added.
 
 ## Legal
 - [ ] Terms of purchase, right of withdrawal and privacy policy approved by Stina (based on Konsumentverket's checklists).
+- [ ] All placeholders in brackets on the legal pages filled in or removed (`src/app/legal/`), and the
+      draft notice (`app-draft-notice`) removed from each page once Stina has approved it.
+- [ ] Withdrawal function on the site: clearly labelled, available during the whole withdrawal period, and
+      sends a receipt in a durable form (required since 2026-06-19, Konsumentverket: "Informationskrav vid
+      distansavtal"). Must be built, and the note on `/kopvillkor` removed.
+- [ ] Standard withdrawal form included in the order confirmation, or otherwise given in a durable form.
+- [ ] Link to Konsumentverket's withdrawal form on `/kopvillkor` opened in a browser (it refuses automated requests).
+- [ ] Retention time for order data confirmed against the Accounting Act (bokföringslagen) and written in the
+      privacy policy, and a way to delete order data after that time decided.
+- [ ] Google Fonts: self-host the fonts, or check Google's transfer terms and complete the privacy policy.
+- [ ] Privacy policy checked again against the features in use (for example the contact form, #74).
 - [ ] Company information (name, org.nr, address, contact) shown on the site.
 - [ ] Seller details in the order emails replaced with the real ones (`SELLER` in `supabase/functions/_shared/order-emails.ts`).
 - [ ] Receipt content, including VAT, checked against Skatteverket and with Stina.

@@ -39,6 +39,14 @@ export const routes: Routes = [
             (m) => m.PurchaseCancelled,
           ),
       },
+      {
+        path: 'kopvillkor',
+        loadComponent: () => import('./legal/terms-page/terms-page').then((m) => m.TermsPage),
+      },
+      {
+        path: 'integritetspolicy',
+        loadComponent: () => import('./legal/privacy-page/privacy-page').then((m) => m.PrivacyPage),
+      },
       // In the shop's layout, since the visitor is not logged in yet.
       {
         path: 'admin/logga-in',

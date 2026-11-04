@@ -40,10 +40,22 @@
 </main>
 
 <footer class="footer">
-  <p class="footer-brand">Hippostina</p>
-  <p class="footer-tagline">Målningar med kol, pigment och akryl</p>
-  <!-- this will be replaced with Stina's real contact details. -->
-  <a class="footer-link" href="mailto:stina@example.com">stina@example.com</a>
-  <a class="footer-link" routerLink="/admin/logga-in">Admin</a>
-  <p class="footer-copy">© {{ year }} Hippostina</p>
+  <div class="footer-inner">
+    <p class="footer-brand">Hippostina</p>
+    <p><a [href]="'mailto:' + contact.email">{{ contact.email }}</a></p>
+    <p>
+      <a [href]="contact.instagramUrl" target="_blank" rel="noopener noreferrer">{{
+        contact.instagram
+      }}</a>
+    </p>
+
+    <div class="footer-bottom">
+      <p>© {{ year }} Hippostina</p>
+      <nav class="footer-legal" aria-label="Köpinformation">
+        <a routerLink="/integritetspolicy">Integritetspolicy</a>
+        <a routerLink="/kopvillkor">Köpvillkor och ångerrätt</a>
+        <a routerLink="/admin/logga-in">Admin</a>
+      </nav>
+    </div>
+  </div>
 </footer>
