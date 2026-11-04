@@ -43,6 +43,7 @@
 
 .info {
   display: flex;
+  flex-wrap: wrap; // In a narrow card the price moves below the title.
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
