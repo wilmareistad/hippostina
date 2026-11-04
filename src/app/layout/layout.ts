@@ -1,13 +1,13 @@
 import { ViewportScroller } from '@angular/common';
 import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { LucideMenu, LucideX } from '@lucide/angular';
+import { LucideCamera, LucideMenu, LucideX } from '@lucide/angular';
 import { CONTACT_CONTENT } from '../contact/contact-content';
 
 /** Public shell, header, page content and footer. Logged-in admin pages use AdminLayout. */
 @Component({
   selector: 'app-layout',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideMenu, LucideX],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideCamera, LucideMenu, LucideX],
   templateUrl: './layout.html',
   styleUrl: './layout.scss',
 })
