@@ -3,6 +3,8 @@ export interface ContactMessage {
   name: string;
   email: string;
   message: string;
+  /** The honeypot: a hidden field that people leave empty, so a value here means a bot. */
+  leaveEmpty: string;
 }
 
 /**
