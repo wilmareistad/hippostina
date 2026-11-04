@@ -20,8 +20,18 @@ h1 {
   font-size: 3rem;
 }
 
+// Text on the left, toggle button on the right.
+.intro-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  margin-right: 10px;
+}
+
 .intro {
-  margin: 0 0 2rem;
+  flex-basis: 85%;
+  margin: 0;
   color: var(--secondary-color-text);
   font-size: 0.875rem;
 }
@@ -31,6 +41,24 @@ h1 {
 
   &.error {
     color: var(--error-colour);
+  }
+}
+
+.view-toggle {
+  flex-shrink: 0;
+  margin-right: -0.625rem;
+  padding: 0.625rem;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-color);
+  }
+
+  svg {
+    display: block;
   }
 }
 
@@ -44,7 +72,24 @@ h1 {
   text-align: left;
 }
 
+// Only below the tablet breakpoint: wider screens always use their fixed columns.
+@media (max-width: 39.99rem) {
+  .grid.compact {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+}
+
 @media (min-width: 40rem) {
+  .view-toggle {
+    display: none;
+  }
+
+  // No button here, so the text uses the whole text column.
+  .intro {
+    flex-basis: 100%;
+  }
+
   .grid {
     grid-template-columns: repeat(2, 1fr);
   }
