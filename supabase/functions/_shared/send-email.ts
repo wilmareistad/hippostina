@@ -10,8 +10,10 @@ const TIMEOUT_MS = 10_000;
 export type Email = {
   to: string;
   subject: string;
-  html: string;
+  html?: string;
   text: string;
+  // Where the answer goes when the recipient presses reply.
+  reply_to?: string;
 };
 
 // Throws if the email could not be sent, so the caller decides what a failure means.
