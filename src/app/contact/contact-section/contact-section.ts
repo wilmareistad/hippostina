@@ -20,6 +20,15 @@ function notBlank(control: AbstractControl<string>): ValidationErrors | null {
   return control.value.trim() === '' ? { required: true } : null;
 }
 
+/**
+ * Like Validators.minLength, but spaces at the start and end do not count. They are removed before
+ * sending, so the Edge Function would otherwise refuse a message that looked long enough here.
+ */
+function minTrimmedLength(min: number) {
+  return (control: AbstractControl<string>): ValidationErrors | null =>
+    control.value.trim().length < min ? { minlength: { requiredLength: min } } : null;
+}
+
 /** Contact section for the start page: contact details and a form (name, email, message). */
 @Component({
   selector: 'app-contact-section',
@@ -52,10 +61,11 @@ export class ContactSection {
       nonNullable: true,
       validators: [
         notBlank,
-        Validators.minLength(CONTACT_LIMITS.messageMin),
+        minTrimmedLength(CONTACT_LIMITS.messageMin),
         Validators.maxLength(CONTACT_LIMITS.messageMax),
       ],
     }),
+    leaveEmpty: new FormControl('', { nonNullable: true }),
   });
 
   protected readonly status = signal<Status>('idle');
@@ -97,11 +107,12 @@ export class ContactSection {
 
     this.status.set('sending');
     try {
-      const { name, email, message } = this.form.getRawValue();
+      const { name, email, message, leaveEmpty } = this.form.getRawValue();
       await this.contactService.send({
         name: name.trim(),
         email: email.trim(),
         message: message.trim(),
+        leaveEmpty,
       });
       this.form.reset();
       this.status.set('sent');
