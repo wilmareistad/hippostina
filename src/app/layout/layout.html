@@ -41,21 +41,33 @@
 
 <footer class="footer">
   <div class="footer-inner">
-    <p class="footer-brand">Hippostina</p>
-    <p><a [href]="'mailto:' + contact.email">{{ contact.email }}</a></p>
-    <p>
-      <a [href]="contact.instagramUrl" target="_blank" rel="noopener noreferrer">{{
-        contact.instagram
-      }}</a>
-    </p>
+    <div class="footer-top">
+      <div>
+        <p class="footer-eyebrow">ATELJÉ &amp; ORIGINALKONST</p>
+        <p class="footer-brand">Hippostina</p>
+        <p class="footer-tagline">Konst av Stina • Sverige</p>
+      </div>
+
+      <a
+        class="footer-button"
+        [href]="contact.instagramUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <svg lucideCamera aria-hidden="true"></svg>
+        {{ contact.instagram }}
+      </a>
+    </div>
 
     <div class="footer-bottom">
-      <p>© {{ year }} Hippostina</p>
-      <nav class="footer-legal" aria-label="Köpinformation">
+      <nav class="footer-nav" aria-label="Sidfot">
+        <a routerLink="/">Hem</a>
+        <a routerLink="/malningar">Målningar</a>
         <a routerLink="/integritetspolicy">Integritetspolicy</a>
         <a routerLink="/kopvillkor">Köpvillkor och ångerrätt</a>
         <a routerLink="/admin/logga-in">Admin</a>
       </nav>
+      <p class="footer-copyright">© {{ year }} Hippostina</p>
     </div>
   </div>
 </footer>
