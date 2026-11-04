@@ -21,3 +21,17 @@ describe('admin routes', () => {
     expect(shop?.children?.some((child) => child.path === 'admin/logga-in')).toBe(true);
   });
 });
+
+describe('legal routes', () => {
+  const shop = routes.find((route) => route.path === '');
+
+  it.each(['kopvillkor', 'integritetspolicy'])(
+    'has /%s in the shop layout, open to every visitor',
+    (path) => {
+      const page = shop?.children?.find((child) => child.path === path);
+
+      expect(page?.loadComponent).toBeDefined();
+      expect(page?.canActivate).toBeUndefined();
+    },
+  );
+});

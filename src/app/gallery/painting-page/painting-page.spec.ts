@@ -89,6 +89,14 @@ describe('PaintingPage', () => {
     expect(root.querySelector('.notice')).toBeNull();
   });
 
+  it('links to the terms before the customer buys', async () => {
+    const { root } = await render();
+
+    const link = root.querySelector<HTMLAnchorElement>('.buy a[href="/kopvillkor"]');
+
+    expect(link?.textContent).toContain('Läs köpvillkor och ångerrätt här');
+  });
+
   it('cancels a purchase of this painting before loading it, and says so', async () => {
     startedPurchase({ sessionId: 'cs_test_123', paintingId: PAINTING_ID });
 

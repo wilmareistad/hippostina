@@ -73,6 +73,22 @@ It is covered by a unit test.
 **Known limitations:** the title comes from `paintings`, so a renamed painting shows its new title in the
 overview. Orders from before #63 show the email warning, since their columns are empty.
 
+## Legal pages (#65)
+
+Tested 2026-11-04 on `feature/legalPages` with `ng serve` on localhost.
+
+| # | Test case | Expected | Result |
+|---|---|---|---|
+| 1 | Unit tests and build | `ng test --watch=false`: 83 tests pass; `ng build` finishes without errors | Pass |
+| 2 | `/kopvillkor` at 1280 px and `/integritetspolicy` at 500 px (screenshots) | Readable, draft notice shown, no sideways scrolling | Pass |
+| 3 | Footer on mobile and desktop, with the links clicked | Copyright and links are stacked on mobile and on one row on desktop; each link opens its page at the top | Not run |
+| 4 | "Läs köpvillkor och ångerrätt här" on the product page, on mobile and desktop | Link is under the buy button and opens `/kopvillkor`; Back returns to the painting | Not run |
+| 5 | External links (Allmänna reklamationsnämnden, IMY, Konsumentverket's withdrawal form) in a browser | Each opens the right page | Not run |
+| 6 | Stina reads the texts and fills in the placeholders | Texts approved, draft notice removed | Not run |
+
+**Known limitations:** the texts are drafts and not legally reviewed. The withdrawal function and the
+withdrawal form in the order confirmation are not built, see `docs/go-live-checklist.md`.
+
 ## Order emails and order overview on the deployed site (#67)
 
 To be run on the deployed site, Stripe test mode. A repeated event is already covered by test 2 in #63.
