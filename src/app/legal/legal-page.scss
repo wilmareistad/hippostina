@@ -1,0 +1,61 @@
+// Shared by the legal pages (/kopvillkor and /integritetspolicy) through styleUrl.
+// Angular still scopes these styles to each component.
+// Mobile first: one column of text. A limited width keeps long lines easy to read.
+.page {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+  line-height: 1.6;
+}
+
+h1 {
+  margin: 0 0 1.5rem;
+  font-weight: 400;
+  font-size: 2.25rem;
+  line-height: 1.2;
+}
+
+h2 {
+  margin: 2rem 0 0.5rem;
+  font-weight: 500;
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+
+p,
+ul {
+  margin: 0 0 1rem;
+  color: var(--secondary-color-text);
+}
+
+ul {
+  padding-left: 1.25rem;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+a {
+  color: var(--color-primary);
+  // Long addresses must not make the page scroll sideways on a phone.
+  overflow-wrap: anywhere;
+}
+
+// Details that Stina has to fill in or confirm.
+.todo {
+  padding: 0 0.25rem;
+  background: var(--secondary-bg-color);
+  color: var(--color-text);
+  font-style: italic;
+}
+
+@media (min-width: 48rem) {
+  .page {
+    padding: 3rem 2rem 5rem;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+}
