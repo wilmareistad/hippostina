@@ -26,6 +26,9 @@ Update it during the project when new settings or keys are added.
 - [ ] Sender address changed from the test sender to the real domain (Supabase secret `EMAIL_FROM`).
 - [ ] Admin notification email set to Stina's address (Supabase secret `ADMIN_EMAIL`).
 - [ ] Resend API key belongs to the account with the verified domain (Supabase secret `RESEND_API_KEY`).
+- [ ] Rate limit added to `send-contact-message`, or the risk accepted. The function is open to everyone and only
+      has a honeypot, so a bot could fill Stina's inbox or use up the Resend quota that the order emails need.
+- [ ] Placeholder address `stina@example.com` in `src/app/contact/contact-content.ts` replaced with the real one.
 
 ## Supabase
 - [ ] Decide if the free plan is enough (pausing, backups) or if Pro is needed.

@@ -76,6 +76,12 @@ h2 {
   white-space: nowrap;
 }
 
+// Moved off screen instead of display: none, which some bots look for and then skip the field.
+.honeypot {
+  position: absolute;
+  left: -9999px;
+}
+
 .form {
   display: flex;
   flex-direction: column;

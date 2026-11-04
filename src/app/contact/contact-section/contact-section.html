@@ -76,6 +76,19 @@
       }
     </div>
 
+    <!-- The honeypot: hidden from people, so only bots fill it in. Not called "website" or similar,
+         because the browser's autofill could then fill it in for a real visitor. -->
+    <div class="honeypot" aria-hidden="true">
+      <label for="contact-leave-empty">Lämna tomt</label>
+      <input
+        id="contact-leave-empty"
+        type="text"
+        formControlName="leaveEmpty"
+        tabindex="-1"
+        autocomplete="off"
+      />
+    </div>
+
     <button type="submit" [disabled]="status() === 'sending'">
       {{ status() === 'sending' ? 'SKICKAR…' : 'SKICKA MEDDELANDE' }}
     </button>
@@ -85,8 +98,7 @@
     <!-- A live region announces its content to screen readers when it changes. -->
     <div role="status">
       @if (status() === 'sent') {
-        <!-- Resend is not working yet, the text will be changed when resend works-->
-        <p class="feedback success">Formuläret fungerar inte än.</p>
+        <p class="feedback success">Tack! Ditt meddelande har skickats. Vi svarar så snart vi kan.</p>
       }
     </div>
     @if (status() === 'error') {

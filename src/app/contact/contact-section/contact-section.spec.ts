@@ -87,10 +87,35 @@ describe('ContactSection', () => {
     await submit();
 
     expect(service.sent).toEqual([
-      { name: 'Anna', email: 'anna@example.com', message: 'Hej, jag undrar över en tavla.' },
+      {
+        name: 'Anna',
+        email: 'anna@example.com',
+        message: 'Hej, jag undrar över en tavla.',
+        leaveEmpty: '',
+      },
     ]);
-    expect(root().textContent).toContain('Formuläret fungerar inte än');
+    expect(root().textContent).toContain('Ditt meddelande har skickats');
     expect(field('contact-name').value).toBe('');
+  });
+
+  it('does not count spaces around the message towards the minimum length', async () => {
+    fill('contact-name', 'Anna');
+    fill('contact-email', 'anna@example.com');
+    fill('contact-message', '   Hej             ');
+    await submit();
+
+    expect(root().textContent).toContain('minst 10 tecken');
+    expect(service.sent.length).toBe(0);
+  });
+
+  it('passes on a filled-in honeypot, so the Edge Function can stop it', async () => {
+    fill('contact-name', 'Bot');
+    fill('contact-email', 'bot@example.com');
+    fill('contact-message', 'Köp billiga klockor här.');
+    fill('contact-leave-empty', 'spam');
+    await submit();
+
+    expect(service.sent[0].leaveEmpty).toBe('spam');
   });
 
   it('shows an error and keeps the text when sending fails', async () => {
