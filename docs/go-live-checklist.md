@@ -8,7 +8,12 @@ Update it during the project when new settings or keys are added.
 - [ ] Live secret key set as a Supabase secret (`STRIPE_SECRET_KEY`).
 - [ ] Live publishable key in the Angular production environment (if it is used).
 - [ ] New live webhook endpoint created in the Stripe Dashboard, pointing to the webhook Edge Function.
-- [ ] Live webhook signing secret set as a Supabase secret (`STRIPE_WEBHOOK_SECRET`).
+      Same setup as the sandbox endpoint: scope "Your account", payload style "Snapshot", events
+      `checkout.session.completed` and `checkout.session.expired`.
+- [ ] Live webhook signing secret set as a Supabase secret (`STRIPE_WEBHOOK_SECRET`). Each endpoint has its
+      own secret, and `stripe listen` uses another one, so this secret must belong to the live endpoint.
+- [ ] Minimum price in the painting form (`MIN_PRICE_KRONOR` in `src/app/core/price.ts`) checked against
+      Stripe's current minimum charge amount for SEK.
 - [ ] Business name, logo and support email set for the Checkout page and receipts.
 
 ## Domain and hosting
@@ -39,4 +44,7 @@ Update it during the project when new settings or keys are added.
 - [ ] Receipt content, including VAT, checked against Skatteverket and with Stina.
 
 ## Final test
-- [ ] One real purchase with a small amount, then a refund.
+- [ ] One real purchase with a small amount (at least the minimum price), then a refund.
+- [ ] After that purchase: the webhook delivery succeeded in the Stripe Dashboard, the painting is `sold`,
+      the order is saved, and both order emails arrived.
+- [ ] A cancelled purchase makes the painting `available` again.

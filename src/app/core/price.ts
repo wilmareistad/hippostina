@@ -1,3 +1,6 @@
+/** Stripe refuses to create a Checkout session for a lower amount in SEK. */
+export const MIN_PRICE_KRONOR = 3;
+
 /** Kronor typed in a form (integer).*/
 export function kronorToOre(kronor: number): number {
   return Math.round(kronor * 100);

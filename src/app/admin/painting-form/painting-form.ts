@@ -11,7 +11,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { LucideArrowLeft } from '@lucide/angular';
 import { Painting, PaintingInput } from '../../core/painting';
 import { PaintingService } from '../../core/painting.service';
-import { kronorToOre, oreToKronor } from '../../core/price';
+import { kronorToOre, MIN_PRICE_KRONOR, oreToKronor } from '../../core/price';
 
 /** Required, and not only spaces (Validators.required accepts "   "). */
 function notBlank(control: AbstractControl<string>): ValidationErrors | null {
@@ -32,12 +32,17 @@ export class PaintingForm {
   /** The :id in the URL. Null on /admin/tavlor/ny. */
   private readonly id = inject(ActivatedRoute).snapshot.paramMap.get('id');
   protected readonly isEdit = this.id !== null;
+  /** Protected so the template can use it for the min attribute and the error message. */
+  protected readonly minPrice = MIN_PRICE_KRONOR;
 
   protected readonly form = new FormGroup({
     title: new FormControl('', { nonNullable: true, validators: [notBlank] }),
     description: new FormControl('', { nonNullable: true }),
     // Typed in kronor, saved as öre. `number | null` because an empty number field is null.
-    price: new FormControl<number | null>(null, [Validators.required, Validators.min(1)]),
+    price: new FormControl<number | null>(null, [
+      Validators.required,
+      Validators.min(MIN_PRICE_KRONOR),
+    ]),
     width: new FormControl<number | null>(null, [Validators.min(1), Validators.pattern(/^\d+$/)]),
     height: new FormControl<number | null>(null, [Validators.min(1), Validators.pattern(/^\d+$/)]),
   });
