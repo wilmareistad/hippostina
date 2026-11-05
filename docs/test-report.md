@@ -91,14 +91,14 @@ withdrawal form in the order confirmation are not built, see `docs/go-live-check
 
 ## Order emails and order overview on the deployed site (#67)
 
-To be run on the deployed site, Stripe test mode. A repeated event is already covered by test 2 in #63.
+Tested 2026-11-05 on the deployed site, Stripe test mode. A repeated event is already covered by test 2 in #63.
 
 | # | Test case | Expected | Result |
 |---|---|---|---|
-| 1 | Successful payment | Customer and admin email both arrive, with correct order number, date, painting, delivery and total; the admin email also has the customer's name and email | Not run |
-| 2 | Cancelled payment | No email | Not run |
-| 3 | Expired session (`stripe checkout sessions expire`) | No email | Not run |
-| 4 | Order overview after test 1 | The order is shown, with the same order number as in the emails | Not run |
-| 5 | Logged-out read of `orders` (REST API with the publishable key) | Refused, and no order data | Not run |
-| 6 | Logged-out upload to and delete from the painting image bucket | Both refused | Not run |
-| 7 | Shop and admin pages on mobile and desktop | Pages work and are readable; no sideways scrolling of the page | Not run |
+| 1 | Successful payment | Customer and admin email both arrive, with correct order number, date, painting, delivery and total; the admin email also has the customer's name and email | Pass |
+| 2 | Cancelled payment | No email | Pass |
+| 3 | Expired session (`stripe checkout sessions expire`) | No email | Pass |
+| 4 | Order overview after test 1 | The order is shown, with the same order number as in the emails | Pass |
+| 5 | Logged-out read of `orders` (REST API with the publishable key) | Refused (`401`, `42501`), and no order data | Pass |
+| 6 | Logged-out upload to and delete from the painting image bucket (Storage API with the publishable key) | Both refused (`AccessDenied`); the upload did not create a file and the deleted file is still in `storage.objects` | Pass |
+| 7 | Shop and admin pages on mobile and desktop | Pages work and are readable; no sideways scrolling of the page | Pass |

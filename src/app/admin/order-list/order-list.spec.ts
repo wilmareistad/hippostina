@@ -49,7 +49,7 @@ describe('OrderList', () => {
     );
   }
 
-  it('shows the details of an order, and no warning when both emails are confirmed', async () => {
+  it('shows the details of an order, and "Skickat" when both emails are confirmed', async () => {
     listOrders.mockResolvedValue([ORDER]);
 
     const root = await render();
@@ -61,7 +61,7 @@ describe('OrderList', () => {
       'Anna Anderssonanna@example.com', // Two separate lines, checked below.
       '1 250 kr',
       'Hämtning',
-      '',
+      'Skickat',
     ]);
     expect(customerLines(root)).toEqual(['Anna Andersson', 'anna@example.com']);
     expect(root.querySelector('.warning')).toBeNull();
@@ -94,7 +94,7 @@ describe('OrderList', () => {
 
     const rows = Array.from(root.querySelectorAll('tbody tr'));
     expect(cells(rows[0])[6]).toBe('Kundmejl ej bekräftat');
-    expect(cells(rows[1])[6]).toBe('');
+    expect(cells(rows[1])[6]).toBe('Skickat');
     expect(root.querySelector('.summary')?.textContent?.replace(/\s+/g, ' ').trim()).toBe(
       '1 order saknar bekräftat mejl',
     );
