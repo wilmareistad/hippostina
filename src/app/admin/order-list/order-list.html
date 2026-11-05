@@ -50,6 +50,8 @@
               <td>
                 @for (warning of missingEmailWarnings(order); track warning) {
                   <div class="warning">{{ warning }}</div>
+                } @empty {
+                  Skickat
                 }
               </td>
             </tr>
