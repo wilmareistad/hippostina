@@ -1,9 +1,9 @@
 /** Texts and contact details for the contact section, kept in one place so they are easy to change. */
 export const CONTACT_CONTENT = {
   eyebrow: 'KONTAKT',
-  title: 'Hittat något du gillar eller vill du beställa ett motiv?',
+  title: 'Hittat något du gillar eller undrar du något?',
   intro:
-    'Skicka gärna en rad om du vill köpa en målning, se fler bilder i olika ljus eller diskutera ett specialbeställt motiv av din egen häst.',
+    'Skicka gärna en en fråga till mig här om det är något du undrar över.',
   email: 'stina@example.com',
   instagram: '@hippostina_art',
   instagramUrl: 'https://www.instagram.com/hippostina_art',
