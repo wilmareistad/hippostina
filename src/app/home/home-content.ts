@@ -2,10 +2,10 @@
 export const HOME_CONTENT = {
   hero: {
     eyebrow: 'VÄLKOMMEN',
-    title: 'Hej, jag heter Stina!',
+    title: 'Hippostina',
     paragraphs: [
-      'Jag målar hästar och djur med rå kol, pigment och akryl på linneduk under namnet Hippostina. Måleriet är min stora passion vid sidan av vardagen.',
-      'Varje målning växer fram organiskt på grov duk, inspirerad av hästens styrka, frihet och blick. Här samlar jag några av mina senaste tavlor som söker nya hem.',
+      'Mitt namn är Stina och jag är konstnär som målar hästar. Måleriet är min stora passion vid sidan av vardagen.',
+      'Varje målning växer fram genom min kreativitet, inspirerad av hästens styrka, frihet och blick. Här samlar jag några av mina senaste tavlor som söker nya hem.',
     ],
     imageAlt: 'Stina målar i sin ateljé',
   },

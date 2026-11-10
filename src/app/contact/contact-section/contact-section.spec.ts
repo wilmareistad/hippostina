@@ -122,7 +122,7 @@ describe('ContactSection', () => {
     service.shouldFail = true;
     fill('contact-name', 'Anna');
     fill('contact-email', 'anna@example.com');
-    fill('contact-message', 'Hej, jag undrar över en tavla.');
+    fill('contact-message', 'Hej, jag undrar över något.');
     await submit();
 
     expect(root().querySelector('[role="alert"]')?.textContent).toContain('Det gick inte att skicka');
