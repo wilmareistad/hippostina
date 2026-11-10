@@ -17,8 +17,7 @@ config, not code (see [docs/go-live-checklist.md](docs/go-live-checklist.md)).
 - Stripe webhook marks paintings as sold and saves the order. Expired or cancelled checkouts make
   the painting available again (with a scheduled job as a backup if a webhook is missed).
 - Order confirmation emails to the customer and the admin (Resend).
-- Admin area: log in, create/edit/archive/delete paintings, upload images, order overview,
-  mark orders as shipped.
+- Admin area: log in, create/edit/archive/delete paintings, upload images, order overview.
 - Contact form, artist page and legal pages (terms, right of withdrawal, privacy).
 - Pickup option and responsive design. UI language is Swedish.
 
@@ -153,7 +152,7 @@ The webhook is protected by the Stripe signature check instead.
 
 ### 7. Set up the Stripe webhook
 
-**Deployed:** in the Stripe Dashboard (test mode), go to **Developers → Webhooks**, add an endpoint
+**Deployed:** in the Stripe Dashboard (test mode), go to **Developers → Webhooks**, add an endpoint (add destination)
 pointing to `https://<your-project-ref>.supabase.co/functions/v1/stripe-webhook` and select the events
 `checkout.session.completed` and `checkout.session.expired`. Copy the signing secret:
 
