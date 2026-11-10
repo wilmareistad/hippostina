@@ -171,12 +171,7 @@ stripe listen --forward-to https://<your-project-ref>.supabase.co/functions/v1/s
 
 ### 8. Deploy the frontend (Cloudflare Workers)
 
-```bash
-npm run build                 # output in dist/hippostina/browser
-npx wrangler deploy           # uses wrangler.jsonc
-```
-
-Or connect the GitHub repo to Cloudflare Workers so every push builds and deploys automatically
+Connect the GitHub repo to Cloudflare Workers so every push builds and deploys automatically
 (build command `npm run build`). Remember to update `siteUrl` in `environment.ts` and the
 `SITE_URL` secret to the deployed URL.
 
