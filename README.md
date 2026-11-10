@@ -33,25 +33,6 @@ config, not code (see [docs/go-live-checklist.md](docs/go-live-checklist.md)).
 | Hosting   | Cloudflare Workers (static assets)                               |
 | CI        | GitHub Actions (keep-alive ping so the free Supabase project is not paused) |
 
-## Project structure
-
-```
-src/                      Angular app
-  app/admin/              Admin login and dashboard
-  app/gallery/            Gallery and product pages
-  app/purchase/           Checkout success/cancel pages
-  app/core/               Services, Supabase client, shared helpers
-  environments/           Public config (Supabase URL, publishable keys)
-supabase/
-  migrations/             Database schema, RLS policies, storage bucket, cron jobs
-  functions/              Edge Functions: create-checkout, cancel-checkout,
-                          stripe-webhook, send-contact-message
-  config.toml             Supabase config (JWT settings per function)
-docs/                     Project plan, test report, go-live checklist
-.github/workflows/        Supabase keep-alive
-wrangler.jsonc            Cloudflare Workers config
-```
-
 ## Installation
 
 ### Prerequisites
