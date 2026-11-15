@@ -2,15 +2,24 @@
 @use 'admin';
 
 :root {
-  /* Colors */
-  --color-bg: #FBF9F4;
-  --color-text: #1B1C19;
-  --secondary-color-text: #3F3B37;
-  --color-primary: #8D5428;
-  --color-secondary: #C07A38;
-  --accent-color: #287879;
-  --secondary-bg-color: #F3EFE6;
-  --error-colour: #b00020;
+  /* Tells the browser the page is dark, so scrollbars and form controls are dark too. */
+  color-scheme: dark;
+
+  /* Colors (dark theme: the paintings stand out more against a dark background) */
+  --color-bg: #1A1917;
+  --color-text: #F3EFE6;
+  --secondary-color-text: #B9B2A7;
+  --color-primary: #D9A066;
+  --color-secondary: #C98A4B;
+  --accent-color: #6CB8B8;
+  --secondary-bg-color: #22201D;
+  --error-colour: #F28B82;
+
+  /* Cards, form fields and lines */
+  --surface-color: #2A2824;
+  --surface-hover-color: #34312C;
+  --border-color: #7D776D;
+  --line-color: rgb(243 239 230 / 10%);
 
   /* Fonts */
   --font-body: 'Inter', system-ui, sans-serif;

@@ -106,8 +106,8 @@ textarea {
   width: 100%;
   padding: 0.75rem;
   // A darker border than the page, so the field edge is visible (contrast for low vision).
-  border: 1px solid #8c877f;
-  background: #fff;
+  border: 1px solid var(--border-color);
+  background: var(--surface-color);
   color: var(--color-text);
   font: inherit;
   font-size: 0.875rem;
@@ -199,10 +199,10 @@ button {
     background: none;
   }
 
-  // The form is a white card next to the text.
+  // The form is a card next to the text.
   .form {
     padding: 1.5rem;
-    background: #fff;
+    background: var(--surface-color);
     align-self: start;
   }
 

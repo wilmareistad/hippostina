@@ -9,7 +9,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  border-bottom: 1px solid rgb(0 0 0 / 8%);
+  border-bottom: 1px solid var(--line-color);
 }
 
 .brand {
@@ -50,7 +50,7 @@
   z-index: 10;
   flex-direction: column;
   background: var(--color-bg);
-  border-bottom: 1px solid rgb(0 0 0 / 8%);
+  border-bottom: 1px solid var(--line-color);
 
   &.open {
     display: flex;

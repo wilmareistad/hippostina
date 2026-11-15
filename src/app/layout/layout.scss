@@ -13,7 +13,7 @@
 }
 
 // Thin line that separates the footer from sections with the same sand background.
-$footer-line: rgb(27 28 25 / 12%);
+$footer-line: var(--line-color);
 
 .footer {
   border-top: 1px solid $footer-line;
