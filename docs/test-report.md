@@ -75,15 +75,16 @@ overview. Orders from before #63 show the email warning, since their columns are
 
 ## Legal pages (#65)
 
-Tested 2026-11-04 on `feature/legalPages` with `ng serve` on localhost.
+Tests 1–2 were run 2026-11-04 on `feature/legalPages` with `ng serve` on localhost.
+Tests 3–5 were run 2026-11-10 on the deployed site.
 
 | # | Test case | Expected | Result |
 |---|---|---|---|
 | 1 | Unit tests and build | `ng test --watch=false`: 83 tests pass; `ng build` finishes without errors | Pass |
 | 2 | `/kopvillkor` at 1280 px and `/integritetspolicy` at 500 px (screenshots) | Readable, draft notice shown, no sideways scrolling | Pass |
-| 3 | Footer on mobile and desktop, with the links clicked | Copyright and links are stacked on mobile and on one row on desktop; each link opens its page at the top | Not run |
-| 4 | "Läs köpvillkor och ångerrätt här" on the product page, on mobile and desktop | Link is under the buy button and opens `/kopvillkor`; Back returns to the painting | Not run |
-| 5 | External links (Allmänna reklamationsnämnden, IMY, Konsumentverket's withdrawal form) in a browser | Each opens the right page | Not run |
+| 3 | Footer on mobile and desktop, with the links clicked | Copyright and links are stacked on mobile and on one row on desktop; each link opens its page at the top | Pass |
+| 4 | "Läs köpvillkor och ångerrätt här" on the product page, on mobile and desktop | Link is under the buy button and opens `/kopvillkor`; Back returns to the painting | Pass |
+| 5 | External links (Allmänna reklamationsnämnden, IMY, Konsumentverket's withdrawal form) in a browser | Each opens the right page | Pass |
 | 6 | Stina reads the texts and fills in the placeholders | Texts approved, draft notice removed | Not run |
 
 **Known limitations:** the texts are drafts and not legally reviewed. The withdrawal function and the

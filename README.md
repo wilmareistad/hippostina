@@ -17,8 +17,7 @@ config, not code (see [docs/go-live-checklist.md](docs/go-live-checklist.md)).
 - Stripe webhook marks paintings as sold and saves the order. Expired or cancelled checkouts make
   the painting available again (with a scheduled job as a backup if a webhook is missed).
 - Order confirmation emails to the customer and the admin (Resend).
-- Admin area: log in, create/edit/archive/delete paintings, upload images, order overview,
-  mark orders as shipped.
+- Admin area: log in, create/edit/archive/delete paintings, upload images, order overview.
 - Contact form, artist page and legal pages (terms, right of withdrawal, privacy).
 - Pickup option and responsive design. UI language is Swedish.
 
@@ -32,25 +31,6 @@ config, not code (see [docs/go-live-checklist.md](docs/go-live-checklist.md)).
 | Email     | Resend, called from Edge Functions                               |
 | Hosting   | Cloudflare Workers (static assets)                               |
 | CI        | GitHub Actions (keep-alive ping so the free Supabase project is not paused) |
-
-## Project structure
-
-```
-src/                      Angular app
-  app/admin/              Admin login and dashboard
-  app/gallery/            Gallery and product pages
-  app/purchase/           Checkout success/cancel pages
-  app/core/               Services, Supabase client, shared helpers
-  environments/           Public config (Supabase URL, publishable keys)
-supabase/
-  migrations/             Database schema, RLS policies, storage bucket, cron jobs
-  functions/              Edge Functions: create-checkout, cancel-checkout,
-                          stripe-webhook, send-contact-message
-  config.toml             Supabase config (JWT settings per function)
-docs/                     Project plan, test report, go-live checklist
-.github/workflows/        Supabase keep-alive
-wrangler.jsonc            Cloudflare Workers config
-```
 
 ## Installation
 
@@ -172,7 +152,7 @@ The webhook is protected by the Stripe signature check instead.
 
 ### 7. Set up the Stripe webhook
 
-**Deployed:** in the Stripe Dashboard (test mode), go to **Developers → Webhooks**, add an endpoint
+**Deployed:** in the Stripe Dashboard (test mode), go to **Developers → Webhooks**, add an endpoint (add destination)
 pointing to `https://<your-project-ref>.supabase.co/functions/v1/stripe-webhook` and select the events
 `checkout.session.completed` and `checkout.session.expired`. Copy the signing secret:
 
@@ -190,12 +170,7 @@ stripe listen --forward-to https://<your-project-ref>.supabase.co/functions/v1/s
 
 ### 8. Deploy the frontend (Cloudflare Workers)
 
-```bash
-npm run build                 # output in dist/hippostina/browser
-npx wrangler deploy           # uses wrangler.jsonc
-```
-
-Or connect the GitHub repo to Cloudflare Workers so every push builds and deploys automatically
+Connect the GitHub repo to Cloudflare Workers so every push builds and deploys automatically
 (build command `npm run build`). Remember to update `siteUrl` in `environment.ts` and the
 `SITE_URL` secret to the deployed URL.
 
