@@ -5,8 +5,8 @@ export const CONTACT_CONTENT = {
   intro:
     'Skicka gärna en en fråga till mig här om det är något du undrar över.',
   email: 'stina@example.com',
-  instagram: '@hippostina_art',
-  instagramUrl: 'https://www.instagram.com/hippostina_art',
-  location: 'Ateljé i Sverige (hämtning kan ordnas efter överenskommelse)',
+  instagram: '@stinaengelin',
+  instagramUrl: 'https://www.instagram.com/stinaengelin/',
+  location: 'Ateljé i Sverige',
   privacyNote: 'Vi använder bara dina uppgifter för att svara på ditt meddelande.',
 } as const;

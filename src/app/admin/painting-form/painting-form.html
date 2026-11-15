@@ -11,18 +11,42 @@
   } @else if (loadError(); as message) {
     <p class="admin-error" role="alert">{{ message }}</p>
   } @else {
+    <!--
+      Enter in a text/number field would submit the form, so the inputs
+      below block it and move focus to the next field. Saving only happens with the save button. The textarea is left alone so
+      Enter still adds a new line. (wheel) blurs number fields so scrolling moves the page
+      instead of changing the value.
+    -->
     <form class="admin-form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <label for="title">Titel</label>
-      <input id="title" type="text" formControlName="title" />
+      <input
+        id="title"
+        type="text"
+        formControlName="title"
+        (keydown.enter)="$event.preventDefault(); descriptionInput.focus()"
+      />
       @if (form.controls.title.touched && form.controls.title.invalid) {
         <p class="admin-error" role="alert">Titel måste fyllas i.</p>
       }
 
       <label for="description">Beskrivning (valfri)</label>
-      <textarea id="description" rows="5" formControlName="description"></textarea>
+      <textarea
+        id="description"
+        #descriptionInput
+        rows="5"
+        formControlName="description"
+      ></textarea>
 
       <label for="price">Pris (kr)</label>
-      <input id="price" type="number" [min]="minPrice" step="0.01" formControlName="price" />
+      <input
+        id="price"
+        type="number"
+        [min]="minPrice"
+        step="0.01"
+        formControlName="price"
+        (keydown.enter)="$event.preventDefault(); widthInput.focus()"
+        (wheel)="$any($event.target).blur()"
+      />
       @if (priceLocked()) {
         <p>Priset kan inte ändras när tavlan är reserverad eller såld.</p>
       }
@@ -31,13 +55,31 @@
       }
 
       <label for="width">Bredd (cm, valfri)</label>
-      <input id="width" type="number" min="1" step="1" formControlName="width" />
+      <input
+        id="width"
+        #widthInput
+        type="number"
+        min="1"
+        step="1"
+        formControlName="width"
+        (keydown.enter)="$event.preventDefault(); heightInput.focus()"
+        (wheel)="$any($event.target).blur()"
+      />
       @if (form.controls.width.touched && form.controls.width.invalid) {
         <p class="admin-error" role="alert">Ange ett heltal över 0, eller lämna tomt.</p>
       }
 
       <label for="height">Höjd (cm, valfri)</label>
-      <input id="height" type="number" min="1" step="1" formControlName="height" />
+      <input
+        id="height"
+        #heightInput
+        type="number"
+        min="1"
+        step="1"
+        formControlName="height"
+        (keydown.enter)="$event.preventDefault(); imageInput.focus()"
+        (wheel)="$any($event.target).blur()"
+      />
       @if (form.controls.height.touched && form.controls.height.invalid) {
         <p class="admin-error" role="alert">Ange ett heltal över 0, eller lämna tomt.</p>
       }
