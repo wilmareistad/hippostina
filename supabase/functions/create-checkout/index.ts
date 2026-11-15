@@ -63,7 +63,7 @@ export default {
       .update({ status: "reserved", reserved_until: reservedUntil, checkout_session_id: null })
       .eq("id", paintingId)
       .eq("status", "available")
-      .select("id, title, price_ore")
+      .select("id, title, price_ore, image_path")
       .maybeSingle();
 
     if (reserveError) {
@@ -89,6 +89,14 @@ export default {
       }
     };
 
+    // The path comes from our database, never from the request. Only https URLs are sent: Stripe has to fetch the image itself,
+    // and a local http://127.0.0.1 URL must never make the session fail.
+    const imageUrl = painting.image_path
+      ? ctx.supabaseAdmin.storage.from("painting-images").getPublicUrl(painting.image_path).data
+        .publicUrl
+      : null;
+    const images = imageUrl?.startsWith("https://") ? [imageUrl] : undefined;
+
     let session: Stripe.Checkout.Session;
     try {
       session = await stripe.checkout.sessions.create({
@@ -99,7 +107,7 @@ export default {
             price_data: {
               currency: "sek",
               unit_amount: painting.price_ore, // öre, from our database
-              product_data: { name: painting.title },
+              product_data: { name: painting.title, images },
             },
           },
         ],
